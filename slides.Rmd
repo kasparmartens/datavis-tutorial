@@ -73,8 +73,23 @@ df %>%
 ]
 
 ---
+# Why you should first visualise your data before launching an ML algorithm
 
-# Why you should...
+Before launching your ML model, you should have a rough idea about:
+
+* Data quality
+    * Are there any batch effects?
+    * Are there possible sample mislabellings?
+    * Outliers? 
+    * Distributions - should you apply a transformation?
+    
+* Expected model fit:
+    * Is there strong (linear) signal? 
+    * Your expected prediction accuracy (will it be close to random or close to 100%)
+
+
+---
+# Why you should first visualise your data before launching an ML algorithm
 
 ```{r, include=FALSE}
 n1 <- 50
@@ -83,34 +98,42 @@ sd <- 0.2
 x <- c(rnorm(n1, -1, sd), rnorm(n2, 1, sd), rnorm(n1, -1, sd), rnorm(n2, 1, sd))
 y <- c(rnorm(n1, -1, sd), rnorm(n2, 1, sd), rnorm(n1, -1+0.3, sd), rnorm(n2, 1+0.3, sd))
 label <- rep(c("A", "A", "B", "B"), c(n1, n2, n1, n2))
-batch <- rep(c("A", "B", "A", "B"), c(n1, n2, n1, n2))
+batch <- rep(c("1", "2", "1", "2"), c(n1, n2, n1, n2))
 df <- data.frame(x, y, label, batch)
 ```
 
-```{r, echo=FALSE, fig.height=3.5, fig.width=3.5}
-df %>%
+```{r, echo=FALSE, fig.height=3.5, fig.width=11}
+p1 <- df %>%
   ggplot(aes(x, y)) + 
   geom_point() + 
   theme_classic()
-```
-
-
---
-
-```{r, echo=FALSE, fig.height=3.5, fig.width=4}
-df %>%
+p2 <- df %>%
   ggplot(aes(x, y, col=label)) + 
   geom_point() + 
   theme_classic()
-```
---
-
-```{r, echo=FALSE, fig.height=3.5, fig.width=4}
-df %>%
+p3 <- df %>%
   ggplot(aes(x, y, col=batch)) + 
   geom_point() + 
   theme_classic() + 
   scale_color_brewer(palette="Set1")
+```
+
+```{r, echo=FALSE, fig.height=3.5, fig.width=11}
+gridExtra::grid.arrange(p1, ncol=3)
+```
+
+---
+# Why you should first visualise your data before launching an ML algorithm
+
+```{r, echo=FALSE, fig.height=3.5, fig.width=11}
+gridExtra::grid.arrange(p1, p2, ncol=3)
+```
+
+---
+# Why you should first visualise your data before launching an ML algorithm
+
+```{r, echo=FALSE, fig.height=3.5, fig.width=11}
+gridExtra::grid.arrange(p1, p2, p3, ncol=3)
 ```
 
 ---
@@ -132,6 +155,17 @@ background-size: 70%
 # Are summary statistics sufficient?
 
 .footnote[Source: https://www.autodeskresearch.com/publications/samestats]
+
+---
+class: inverse
+
+## Why visualise?
+
+> "The simple graph has brought more information to the data analyst’s mind than any other device." --- John Tukey
+
+## Why R?
+
+Thanks to the tidyverse (https://www.tidyverse.org/) probably the best framework for doing data science.
 
 ---
 class: top, inverse
@@ -160,6 +194,9 @@ class: inverse, middle
 2. Tools for data manipulation and transformation
 
 3. Visual exploratory analysis (combining 1. and 2.)
+
+![](http://r4ds.had.co.nz/diagrams/data-science-explore.png)
+
 ---
 class: top, inverse
 background-image: url(http://hexb.in/vector/ggplot2.svg)
@@ -176,8 +213,8 @@ background-size: 70%
 
 # ggplot2
 
-* Quickly iterate over a variety of plots (only making minimal changes to the code)
-* Create publication-ready plots with minimal tweaking
+* Quickly iterate over a variety of plots (only making minimal changes to the code). 
+* Create publication-quality plots with minimal tweaking. 
 
 .footnote[google image search for "ggplot2"]
 
@@ -205,16 +242,15 @@ class: top
 
 ### TCGA breast cancer data set
 
-Phenotypes:
+* Phenotypes:
+    * age
+    * ER status (estrogen-receptor-positive or negative)
+    * PAM50 cancer subtype
+* Gene expression data:
+    * `log(x+1)` transformed expression for all genes
+    * PCA has been applied to expression data => PC1 and PC2 provided
 
-* age
-* ER status
-* PAM50 cancer subtype
-
-Gene expression data:
-
-* `log(x+1)` transformed expression for all genes
-* PCA has been applied to expression data => PC1 and PC2 provided
+Prepared data frame:
 
 ```{r, echo=FALSE}
 df <- readRDS("data/TCGA_processed.rds")
@@ -224,7 +260,6 @@ knitr::kable(head(df[sample(1:nrow(df)), ], 4), format="html")
 --
 
 .
-
 Question: Do different subtypes have different expression profiles?
 
 ---
@@ -299,6 +334,8 @@ ggplot(df, aes(x = age)) +
 ---
 
 # Is age correlated with PC1?
+
+--
 
 ```{r, fig.height=4.5, fig.width=6}
 ggplot(df, aes(x = age, y = pc1)) + 
@@ -380,29 +417,52 @@ ggplot(df, aes(x = age, y = pc1)) +
 
 ---
 
-# Your turn
-
 Lets come back to 
 
-```{r, echo=FALSE, fig.height=4.5, fig.width=5.5}
-ggplot(df, aes(x = pc1, y = pc2, col = PAM50)) + 
+```{r, echo=FALSE, fig.height=4.5, fig.width=11}
+p1 <- ggplot(df, aes(x = pc1, y = pc2, col = ER_status)) + 
   geom_point()
+p2 <- ggplot(df, aes(x = pc1, y = pc2, col = PAM50)) + 
+  geom_point()
+gridExtra::grid.arrange(p1, p2, nrow=1)
 ```
 
-PC1 seems to distinguish well between subtypes. What is a good way to visualise this? 
+PC1 seems to distinguish well between 
 
-I.e. how to visualise an association between a continuous and a grouping variable?
+1. ER-positive and ER-negative cancers
+2. between PAM50 subtypes
+
+What is a good way to visualise this? 
 
 ---
 
+For example, you could consider
+
+```{r, fig.height=6, fig.width=8, echo=FALSE, eval=FALSE}
+p1 <- ggplot(df, aes(x = ER_status, y = pc1)) + 
+  geom_jitter() + 
+  ggtitle("geom_jitter()")
+p2 <- ggplot(df, aes(x = pc1, col = ER_status)) + 
+  geom_density() + 
+  ggtitle("geom_density()")
+p3 <- ggplot(df, aes(x = ER_status, y = pc1)) + 
+  geom_boxplot() + 
+  ggtitle("geom_boxplot()")
+p4 <- ggplot(df, aes(x = ER_status, y = pc1)) + 
+  geom_violin() + 
+  ggtitle("geom_violin()")
+gridExtra::grid.arrange(p1, p2, p3, p4, nrow=2)
+```
+
+
 .pull-left[
 ```{r, fig.height=4, fig.width=4, echo=FALSE}
-ggplot(df, aes(x = PAM50, y = pc1)) + 
+ggplot(df, aes(x = ER_status, y = pc1)) + 
   geom_jitter() + 
   ggtitle("geom_jitter()")
 ```
 ```{r, fig.height=4, fig.width=5, echo=FALSE}
-ggplot(df, aes(x = pc1, col = PAM50)) + 
+ggplot(df, aes(x = pc1, col = ER_status)) + 
   geom_density() + 
   ggtitle("geom_density()")
 ```
@@ -410,34 +470,103 @@ ggplot(df, aes(x = pc1, col = PAM50)) +
 
 .pull-right[
 ```{r, fig.height=4, fig.width=4, echo=FALSE}
-ggplot(df, aes(x = PAM50, y = pc1)) + 
+ggplot(df, aes(x = ER_status, y = pc1)) + 
   geom_boxplot() + 
   ggtitle("geom_boxplot()")
 ```
 ```{r, fig.height=4, fig.width=4, echo=FALSE}
-ggplot(df, aes(x = PAM50, y = pc1)) + 
+ggplot(df, aes(x = ER_status, y = pc1)) + 
   geom_violin() + 
-  ggtitle("geom_boxplot()")
+  ggtitle("geom_violin()")
 ```
 ]
 
 ---
 
-# aes()
+# Tweaking
 
-* maps columns in your data to aesthetics
-* these 
-
-# aes() maps columns in your data to aesthetics
-
-`ggplot(df, aes(x=pc1, y=pc2, col="green"))` versus `ggplot(df, aes(x=pc1, y=pc2), col="green")`
+* Combining layers
+* Add transparency using `alpha = 0.5`
+* Changing the default theme:
+    * `+ theme_bw()`
+    * `+ theme_classic()`
+    * `+ theme_minimal()`
+    
 
 .pull-left[
-```{r}
-ggplot(df, aes(x=pc1, y=pc2, col="green")) + 
-  geom_point()
+```{r, fig.height=4, fig.width=5, echo=FALSE}
+ggplot(df, aes(x = ER_status, y = pc1)) + 
+  geom_boxplot(aes(fill = ER_status)) +
+  geom_jitter(alpha = 0.1) + 
+  theme_classic()
 ```
 ]
+
+.pull-right[
+```{r, fig.height=4, fig.width=5, echo=FALSE}
+ggplot(df, aes(x = pc1, fill = ER_status)) + 
+  geom_density(alpha = 0.5) + 
+  theme_classic()
+```
+]
+
+---
+
+# Tweaking further
+
+Adding points to the background
+
+.pull-left[
+```{r, fig.height=4.5, fig.width=6, echo=FALSE}
+ggplot(df, aes(x = pc1, y = pc2, col=PAM50)) + 
+  geom_point() +
+  facet_wrap(~ PAM50) + 
+  theme_classic() + 
+  theme(legend.position="none")
+```
+]
+.pull-right[
+```{r, fig.height=4.5, fig.width=6, echo=FALSE}
+ggplot(df, aes(x = pc1, y = pc2, col=PAM50)) + 
+  geom_point(data = select(df, -PAM50), col="grey70", alpha = 0.5) +
+  geom_point() +
+  facet_wrap(~ PAM50) + 
+  theme_classic() + 
+  theme(legend.position="none")
+```
+]
+
+---
+
+# Your turn
+
+Design an informative (and nice) visualisation for showing how well PC1 distinguishes between PAM50 subtypes. 
+
+---
+background-image: url(fig/tidyverse_data_science.png)
+background-position: 50% 50%
+background-size: 60%
+
+# Data exploration workflow
+
+
+.footnote[Source: https://lsru.github.io/tv_course]
+
+---
+
+# Dplyr
+
+---
+
+# Pipe
+
+---
+
+# Joining data frames
+
+---
+
+# Your turn
 
 ---
 class: center, top, inverse
