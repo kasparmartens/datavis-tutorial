@@ -77,12 +77,16 @@ df %>%
 
 Before launching your ML model, you should have a rough idea about:
 
+--
+
 * Data quality
     * Are there any batch effects?
     * Are there possible sample mislabellings?
     * Outliers? 
     * Distributions - should you apply a transformation?
-    
+
+--
+
 * Expected model fit:
     * Is there strong (linear) signal? 
     * Your expected prediction accuracy (will it be close to random or close to 100%)
@@ -99,20 +103,20 @@ x <- c(rnorm(n1, -1, sd), rnorm(n2, 1, sd), rnorm(n1, -1, sd), rnorm(n2, 1, sd))
 y <- c(rnorm(n1, -1, sd), rnorm(n2, 1, sd), rnorm(n1, -1+0.3, sd), rnorm(n2, 1+0.3, sd))
 label <- rep(c("A", "A", "B", "B"), c(n1, n2, n1, n2))
 batch <- rep(c("1", "2", "1", "2"), c(n1, n2, n1, n2))
-df <- data.frame(x, y, label, batch)
+df <- data.frame(pc1 = x, pc2 = y, label, batch)
 ```
 
 ```{r, echo=FALSE, fig.height=3.5, fig.width=11}
 p1 <- df %>%
-  ggplot(aes(x, y)) + 
+  ggplot(aes(pc1, pc2)) + 
   geom_point() + 
   theme_classic()
 p2 <- df %>%
-  ggplot(aes(x, y, col=label)) + 
+  ggplot(aes(pc1, pc2, col=label)) + 
   geom_point() + 
   theme_classic()
 p3 <- df %>%
-  ggplot(aes(x, y, col=batch)) + 
+  ggplot(aes(pc1, pc2, col=batch)) + 
   geom_point() + 
   theme_classic() + 
   scale_color_brewer(palette="Set1")
@@ -137,12 +141,78 @@ gridExtra::grid.arrange(p1, p2, p3, ncol=3)
 ```
 
 ---
+class: inverse, middle
+
+# Are summary statistics good enough?
+
+---
+# Are summary statistics good enough?
+
+Do groups A and B have a significantly different measurements x?
+
+
+```{r, echo=FALSE, fig.height=2, fig.width=10}
+n <- 100
+x1 <- ifelse(rbinom(n, 1, 0.5) == 0, rnorm(n, 3), rnorm(n, -3))
+x2 <- rnorm(n, 3)
+cluster <- 
+df <- data.frame(x = c(x1, x2), cluster = c(rep("A", n), rep("B", n))) 
+
+p1 <- df %>%
+  group_by(cluster) %>%
+  summarise(mean = mean(x)) %>%
+  ggplot(aes(cluster, mean, col=cluster)) + 
+  geom_point(size=4) +
+  theme_classic()
+
+p2 <- df %>%
+  ggplot(aes(cluster, x, col=cluster)) + 
+  geom_boxplot() +
+  theme_classic()
+
+
+p3 <- df %>%
+  ggplot(aes(cluster, x, col=cluster)) + 
+  geom_boxplot() +
+  geom_jitter(alpha = 0.5) +
+  theme_classic()
+```
+
+```{r, echo=FALSE, fig.height=2, fig.width=10}
+gridExtra::grid.arrange(p1, ncol=3)
+```
+
+---
+# Are summary statistics good enough?
+
+Do groups A and B have a significantly different measurements x?
+
+```{r, echo=FALSE, fig.height=2, fig.width=10}
+gridExtra::grid.arrange(p1, p2, ncol=3)
+```
+
+---
+# Are summary statistics good enough?
+
+Do groups A and B have a significantly different measurements x?
+
+```{r, echo=FALSE, fig.height=2, fig.width=10}
+gridExtra::grid.arrange(p1, p2, p3, ncol=3)
+```
+
+--
+
+group means `<` boxplot `<` data
+
+---
 class: top
 background-image: url(fig/Anscombes_quartet.png)
-background-position: 50% 50%
+background-position: 50% 60%
 background-size: 50%
 
-# Are summary statistics sufficient?
+# Are summary statistics good enough?
+
+Is there a significant association between two continuous variables x and y?
 
 .footnote[Source: https://en.wikipedia.org/wiki/Anscombe%27s_quartet]
 
@@ -152,9 +222,10 @@ background-image: url(fig/DinoSequentialSmaller.gif)
 background-position: 50% 50%
 background-size: 70%
 
-# Are summary statistics sufficient?
+# Are summary statistics good enough?
 
 .footnote[Source: https://www.autodeskresearch.com/publications/samestats]
+
 
 ---
 class: inverse
@@ -170,8 +241,8 @@ Thanks to the tidyverse (https://www.tidyverse.org/) probably the best framework
 ---
 class: top, inverse
 background-image: url(https://lsru.github.io/tv_course/img/01_tidyverse_components.png)
-background-position: 50% 100%
-background-size: 50%
+background-position: 50% 90%
+background-size: 40%
 
 # Tidyverse
 
@@ -180,9 +251,9 @@ A popular collection of R packages for data import, manipulation, exploration an
 
 * Unified and consistent design and API (unlike base R)
 * Intuitive underlying philosophy
-* Relatively easy-to-learn
+* Easy-to-learn
+* Easy to get help: large community on stackoverflow, twitter #rstats etc
 
-https://www.tidyverse.org/
 
 ---
 class: inverse, middle
@@ -196,6 +267,8 @@ class: inverse, middle
 3. Visual exploratory analysis (combining 1. and 2.)
 
 ![](http://r4ds.had.co.nz/diagrams/data-science-explore.png)
+
+.footnote[Fig source: http://r4ds.had.co.nz]
 
 ---
 class: top, inverse
@@ -217,6 +290,16 @@ background-size: 70%
 * Create publication-quality plots with minimal tweaking. 
 
 .footnote[google image search for "ggplot2"]
+
+---
+class: top
+background-image: url(fig/learning_curve.png)
+background-position: 50% 80%
+background-size: 70%
+
+# ggplot2 learning curve
+
+.footnote[Source: https://github.com/jennybc/ggplot2-tutorial]
 
 ---
 class: top
@@ -259,14 +342,15 @@ knitr::kable(head(df[sample(1:nrow(df)), ], 4), format="html")
 
 --
 
-.
-Question: Do different subtypes have different expression profiles?
+**Question**: Do different subtypes have different expression profiles?
 
 ---
 
 # ggplot2 call
 
 ```{r, fig.height=4.5, fig.width=4.5}
+library(ggplot2)
+
 ggplot(df, aes(x = pc1, y = pc2))
 ```
 
@@ -490,13 +574,14 @@ ggplot(df, aes(x = ER_status, y = pc1)) +
 * Changing the default theme:
     * `+ theme_bw()`
     * `+ theme_classic()`
-    * `+ theme_minimal()`
-    
+    * etc, see also the ggthemes package
+* Check out the ggplot2 cheat sheet by RStudio
+
 
 .pull-left[
 ```{r, fig.height=4, fig.width=5, echo=FALSE}
 ggplot(df, aes(x = ER_status, y = pc1)) + 
-  geom_boxplot(aes(fill = ER_status)) +
+  geom_boxplot(aes(fill = ER_status), outlier.shape = NA) +
   geom_jitter(alpha = 0.1) + 
   theme_classic()
 ```
@@ -512,7 +597,7 @@ ggplot(df, aes(x = pc1, fill = ER_status)) +
 
 ---
 
-# Tweaking further
+# Further tweaking
 
 Adding points to the background
 
@@ -540,7 +625,21 @@ ggplot(df, aes(x = pc1, y = pc2, col=PAM50)) +
 
 # Your turn
 
+```{r, echo=FALSE, fig.height=4.5, fig.width=5.5}
+ggplot(df, aes(x = pc1, y = pc2, col = PAM50)) + 
+  geom_point()
+```
+
 Design an informative (and nice) visualisation for showing how well PC1 distinguishes between PAM50 subtypes. 
+
+---
+
+Note: So far we have been using a nice clean prepared data set. But in reality, they came from two different data sources:
+
+* clinical variables / phenotypes
+* gene expression data
+
+=> Data cleaning and transformations need to be carried out. 
 
 ---
 background-image: url(fig/tidyverse_data_science.png)
@@ -553,20 +652,170 @@ background-size: 60%
 .footnote[Source: https://lsru.github.io/tv_course]
 
 ---
-
-# Dplyr
+# 
 
 ---
 
-# Pipe
+class: inverse, middle
+
+# Data transformation using dplyr
+
+---
+
+# Subset rows with filter()
+
+![](fig/dplyr_filter.png)
+
+Example: 
+
+```{r, eval=FALSE}
+filter(df, ER_status == "Positive")
+```
+
+```{r, eval=FALSE}
+filter(df, ER_status == "Positive", PAM50 %in% c("LumA", "LumB"))
+```
+
+---
+
+# Subset columns with select()
+
+![](fig/dplyr_select.png)
+
+Example: 
+
+```{r, eval=FALSE}
+select(df, id, pc1, pc2)
+```
+
+Or exclude certain columns
+
+```{r, eval=FALSE}
+select(df, -ER_status, -PAM50)
+```
+
+---
+# Add a new column with mutate()
+
+![](fig/dplyr_mutate.png)
+
+Example: 
+
+```{r, eval=FALSE}
+mutate(df, scaled_pc1 = 100 * pc1)
+```
+
+---
+
+### group_by() and summarise()
+
+![](fig/dplyr_group_by_summarize.png)
+
+Example: 
+
+```{r}
+grouped_df <- group_by(df, ER_status)
+summarise(grouped_df, count = n(), mean_pc1 = mean(pc1))
+```
+
+---
+
+# Pipes `%>%`
+
+Introducing `%>%`, to help you write code in a way that easier to read and understand.
+
+`g(f(x))` can be rewritten using the pipe `x %>% f() %>% g()`
+
+
+--
+
+E.g. the following
+
+```{r, eval=FALSE}
+df_filtered <- filter(df, ER_status == "Positive")
+grouped_df <- group_by(df, PAM50)
+summarise(grouped_df, count = n(), mean_pc1 = mean(pc1))
+```
+
+can be rewritten 
+
+```{r, eval=FALSE}
+df %>%
+  filter(ER_status == "Positive") %>%
+  group_by(PAM50) %>%
+  summarise(count = n(), mean_pc1 = mean(pc1))
+```
+
+--
+
+* No need for storing intermediate variables.
+* Easier to read and write.
+
+---
+
+# Dplyr in one slide
+
+* Pick observations by their values (`filter()`).
+* Reorder the rows (`arrange()`).
+* Pick variables by their names (`select()`).
+* Create new variables with functions of existing variables (`mutate()`).
+* Collapse many values down to a single summary (`summarise()`).
+
+
+All of these functions follow a common design:
+
+* The first argument is a data frame.
+* The subsequent arguments describe what to do with the data frame, using the variable names (without quotes).
+* The result is a new data frame.
+
+---
+
+# Your turn
+
+1. Order the PAM50 subtypes by the number of observations in each subtype. 
+2. Calculate the mean PC1 and PC2 value for every PAM50 subtype. Can you add this to the PC1-PC2 scatterplot?
+
+---
+
+# Tidy data
+
+> “Tidy datasets are all alike, but every messy dataset is messy in its own way.” –– Hadley Wickham
+
+1. Each variable must have its own column. 
+2. Each observation must have its own row. 
+3. Each value must have its own cell.
+
+![](http://r4ds.had.co.nz/images/tidy-1.png)
+
+---
+
+# Tidy vs untidy data
+
+![](fig/tidy_vs_untidy.png)
+
+--
+
+What is tidy format for a gene expression matrix?
+
+We should ask ourselves: Is our data trapped in column names? Column headers should be variable names (but not values). -- When we want to perform an operation/calculation *for every gene*, this is the case. 
+
+.footnote[Fig source: http://eriqande.github.io/rep-res-web/lectures/]
+
+---
+
+# tidyr for converting between the two formats
+
+![](http://r4ds.had.co.nz/images/tidy-9.png)
+
+--
+
+![](fig/tidyr_gather.png)
 
 ---
 
 # Joining data frames
 
----
 
-# Your turn
 
 ---
 class: center, top, inverse
