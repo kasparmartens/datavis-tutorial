@@ -1,0 +1,50 @@
+---
+title: "Tutorial part 2"
+output: html_notebook
+---
+
+Read in the data sets
+
+```{r}
+library(tidyverse)
+
+df_exprs <- readRDS("data/TCGA_exprs.rds")
+head(df_exprs)
+
+df_clinical <- readRDS("data/TCGA_clinical.rds")
+head(df_clinical)
+
+df_pca <- readRDS("data/TCGA_pca.rds")
+head(df_pca)
+```
+
+Convert the expression data into tidy format
+
+```{r}
+# your code
+```
+
+Join the three different data sets, using the sample IDs for merging. This will be useful for further analysis. 
+
+```{r}
+# your code
+```
+
+Filter out 10 most variable genes. What would be an informative way to visualise these?
+
+```{r}
+# your code
+```
+
+Perhaps boxplots for every PAM50 subtype?
+
+```{r}
+# your code
+```
+
+Or perhaps plot the expression of these genes against PC1?
+
+```{r}
+# your code
+```
+

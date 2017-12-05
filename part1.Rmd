@@ -1,0 +1,40 @@
+---
+title: "Tutorial part 1"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+
+df <- readRDS("data/TCGA_processed.rds")
+
+df
+```
+
+```{r}
+ggplot(df, aes(x = pc1, y = pc2, col = ER_status)) +
+  geom_point()
+```
+
+Design an informative (and nice) visualisation for showing how well PC1 distinguishes between PAM50 subtypes. 
+
+```{r}
+# your code
+```
+
+
+Dplyr exercise. 
+
+Order the PAM50 subtypes by the number of observations in each subtype. 
+
+```{r}
+# your code
+```
+
+
+Calculate the mean PC1 and PC2 value for every PAM50 subtype. Can you add this to the PC1-PC2 scatterplot?
+
+```{r}
+# your code
+```
+
