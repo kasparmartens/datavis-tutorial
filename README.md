@@ -2,8 +2,8 @@
 
 Covering
 
-* The importance of visual EDA
-* How to use the tidyverse packages (incl ggplot2, tidyr, dplyr) for EDA
+* The importance of visualising your data
+* How to use the tidyverse packages (ggplot2, dplyr, tidyr) for exploratory data analysis
 * Based on a case study of TCGA breast cancer data. 
 
 ### Get started -- download the materials

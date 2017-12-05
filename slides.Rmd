@@ -632,9 +632,11 @@ ggplot(df, aes(x = pc1, y = pc2, col = PAM50)) +
 
 Design an informative (and nice) visualisation for showing how well PC1 distinguishes between PAM50 subtypes. 
 
+
 ---
 
-Note: So far we have been using a nice clean prepared data set. But in reality, they came from two different data sources:
+
+**Note**: So far we have been using a nice clean prepared data set. But in reality, they came from two different data sources:
 
 * clinical variables / phenotypes
 * gene expression data
@@ -785,6 +787,8 @@ All of these functions follow a common design:
 2. Each observation must have its own row. 
 3. Each value must have its own cell.
 
+--
+
 ![](http://r4ds.had.co.nz/images/tidy-1.png)
 
 ---
@@ -810,6 +814,10 @@ We should ask ourselves: Is our data trapped in column names? Column headers sho
 --
 
 ![](fig/tidyr_gather.png)
+
+---
+
+# Your turn
 
 ---
 
