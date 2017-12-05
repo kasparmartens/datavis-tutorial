@@ -260,6 +260,8 @@ class: inverse, middle
 
 # Outline:
 
+Using TCGA breast cancer data as a case study, 
+
 1. Data visualisation using ggplot2
 
 2. Tools for data manipulation and transformation
@@ -592,6 +594,7 @@ ggplot(df, aes(x = ER_status, y = pc1)) +
     * `+ theme_classic()`
     * etc, see also the ggthemes package
 * Check out the ggplot2 cheat sheet by RStudio
+* Various ggplot2 extensions http://www.ggplot2-exts.org/
 
 
 .pull-left[
@@ -657,7 +660,7 @@ Design an informative (and nice) visualisation for showing how well PC1 distingu
 * clinical variables / phenotypes
 * gene expression data
 
-=> Data cleaning and transformations need to be carried out. 
+=> In practice, data cleaning is the most time consuming part of the analysis. 
 
 ---
 background-image: url(fig/tidyverse_data_science.png)
@@ -668,9 +671,6 @@ background-size: 60%
 
 
 .footnote[Source: https://lsru.github.io/tv_course]
-
----
-# 
 
 ---
 
@@ -877,9 +877,24 @@ background-size: 40%
 ![](fig/join3.png)
 
 ---
-class: center, top, inverse
+class: center, top
 background-image: url(https://raw.githubusercontent.com/LSRU/r_workshop/gh-pages/img/drob_r_pipeline_450.png)
 background-position: 50% 60%
 background-size: 60%
 
 # Data science workflow within tidyverse
+
+---
+class: center, top
+background-image: url(fig/shiny_gallery.png)
+background-position: 50% 60%
+background-size: 70%
+
+# Creating interactive visualisations
+
+Turn your static figures into an interactive app with little effort using Shiny https://shiny.rstudio.com/gallery/
+
+---
+class: inverse, middle, center
+
+## kaspar.martens@gmail.com

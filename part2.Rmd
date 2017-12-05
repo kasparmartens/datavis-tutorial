@@ -36,13 +36,19 @@ Filter out 10 most variable genes. What would be an informative way to visualise
 # your code
 ```
 
-Perhaps boxplots for every PAM50 subtype?
+Perhaps compare their distributions across PAM50 subtypes?
 
 ```{r}
 # your code
 ```
 
 Or perhaps plot the expression of these genes against PC1?
+
+```{r}
+# your code
+```
+
+Can you find which genes are most correlated with PC1? Visualise these.  
 
 ```{r}
 # your code

@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Visual exploratory (genomic) data analysis in R</title>
+    <meta charset="utf-8">
+    <meta name="author" content="Kaspar Märtens" />
+    <meta name="date" content="2017-05-12" />
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link href="libs/remark-css/default-fonts.css" rel="stylesheet" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Visual exploratory (genomic) data analysis in R
+## Using ggplot2 and the tidyverse for visual EDA
+### Kaspar Märtens
+### 05/12/2017
+
+---
+
+
+
+
+class: inverse, middle, center
+
+# Why you should first visualise your data before launching an ML algorithm
+
+
+---
+class: middle
+
+Consider the following data (N=20, p=2)
+
+
+
+.pull-left[
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:right;"&gt; x &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; y &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 1.593 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -1.209 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; -0.195 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.991 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; -1.388 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.440 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; -1.794 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.884 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 1.676 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -1.091 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 0.598 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.909 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 1.606 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -1.192 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 1.880 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.681 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; -1.063 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -1.694 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; -1.377 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -1.450 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+]
+
+.pull-right[
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt;   &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; x &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; y &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; 11 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.851 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.757 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; 12 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.546 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.924 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; 13 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.891 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.791 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; 14 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.771 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -1.845 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; 15 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -1.493 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.331 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; 16 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.249 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -1.984 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; 17 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -2.000 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.029 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; 18 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.404 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -1.959 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; 19 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.997 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.102 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; 20 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -1.458 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.369 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+]
+
+
+---
+class: middle
+
+.pull-left[
+
+```r
+mean(x)
+```
+
+```
+## [1] 0.04724152
+```
+
+```r
+mean(y)
+```
+
+```
+## [1] -0.07760144
+```
+
+```r
+cor(x, y)
+```
+
+```
+## [1] -0.0304444
+```
+]
+
+--
+
+.pull-right[
+Scatterplot immediately reveals the structure
+
+![](slides_files/figure-html/unnamed-chunk-5-1.png)&lt;!-- --&gt;
+]
+
+---
+# Why you should first visualise your data before launching an ML algorithm
+
+Before launching your ML model, you should have a rough idea about:
+
+--
+
+* Data quality
+    * Are there any batch effects?
+    * Are there possible sample mislabellings?
+    * Outliers? 
+    * Distributions - should you apply a transformation?
+
+--
+
+* Expected model fit:
+    * Is there strong (linear) signal? 
+    * Your expected prediction accuracy (will it be close to random or close to 100%)
+
+
+---
+# Why you should first visualise your data before launching an ML algorithm
+
+
+
+
+
+![](slides_files/figure-html/unnamed-chunk-8-1.png)&lt;!-- --&gt;
+
+---
+# Why you should first visualise your data before launching an ML algorithm
+
+![](slides_files/figure-html/unnamed-chunk-9-1.png)&lt;!-- --&gt;
+
+---
+# Why you should first visualise your data before launching an ML algorithm
+
+![](slides_files/figure-html/unnamed-chunk-10-1.png)&lt;!-- --&gt;
+
+---
+class: inverse, middle
+
+# Are summary statistics good enough?
+
+---
+# Are summary statistics good enough?
+
+Do groups A and B have a significantly different measurements x?
+
+
+
+
+![](slides_files/figure-html/unnamed-chunk-12-1.png)&lt;!-- --&gt;
+
+---
+# Are summary statistics good enough?
+
+Do groups A and B have a significantly different measurements x?
+
+![](slides_files/figure-html/unnamed-chunk-13-1.png)&lt;!-- --&gt;
+
+---
+# Are summary statistics good enough?
+
+Do groups A and B have a significantly different measurements x?
+
+![](slides_files/figure-html/unnamed-chunk-14-1.png)&lt;!-- --&gt;
+
+--
+
+group means `&lt;` boxplot `&lt;` data
+
+---
+class: top
+background-image: url(fig/Anscombes_quartet.png)
+background-position: 50% 60%
+background-size: 50%
+
+# Are summary statistics good enough?
+
+Is there a significant association between two continuous variables x and y?
+
+.footnote[Source: https://en.wikipedia.org/wiki/Anscombe%27s_quartet]
+
+---
+class: top
+background-image: url(fig/DinoSequentialSmaller.gif)
+background-position: 50% 50%
+background-size: 70%
+
+# Are summary statistics good enough?
+
+.footnote[Source: https://www.autodeskresearch.com/publications/samestats]
+
+
+---
+class: inverse
+
+## Why visualise?
+
+&gt; "The simple graph has brought more information to the data analyst’s mind than any other device." --- John Tukey
+
+## Why R?
+
+Thanks to the tidyverse (https://www.tidyverse.org/) probably the best framework for doing data science.
+
+---
+class: top, inverse
+background-image: url(https://lsru.github.io/tv_course/img/01_tidyverse_components.png)
+background-position: 50% 90%
+background-size: 40%
+
+# Tidyverse
+
+A popular collection of R packages for data import, manipulation, exploration and visualization.
+
+
+* Unified and consistent design and API (unlike base R)
+* Intuitive underlying philosophy
+* Easy-to-learn
+* Easy to get help: large community on stackoverflow, twitter #rstats etc
+
+
+---
+class: inverse, middle
+
+# Outline:
+
+Using TCGA breast cancer data as a case study, 
+
+1. Data visualisation using ggplot2
+
+2. Tools for data manipulation and transformation
+
+3. Visual exploratory analysis (combining 1. and 2.)
+
+![](http://r4ds.had.co.nz/diagrams/data-science-explore.png)
+
+.footnote[Fig source: http://r4ds.had.co.nz]
+
+---
+class: top, inverse
+background-image: url(http://hexb.in/vector/ggplot2.svg)
+background-position: 50% 80%
+background-size: 40%
+
+# ggplot2
+
+---
+class: top
+background-image: url(http://hadley.nz/hadley-wickham.jpg)
+background-position: 50% 60%
+background-size: 40%
+
+Hadley Wickham (http://hadley.nz/):
+
+* author of many widely used R packages, including ggplot2
+* introduced the concept of tidy data and key contributor to the tidyverse
+* author of many excellent books, including
+    * R for Data Science http://r4ds.had.co.nz/
+    * Advanced R http://adv-r.had.co.nz/
+    * etc
+    
+
+---
+class: top
+background-image: url(fig/ggplot2-google-image-search.png)
+background-position: 50% 80%
+background-size: 70%
+
+# ggplot2
+
+* Quickly iterate over a variety of plots (only making minimal changes to the code). 
+* Create publication-quality plots with minimal tweaking. 
+
+.footnote[google image search for "ggplot2"]
+
+---
+class: top
+background-image: url(fig/learning_curve.png)
+background-position: 50% 80%
+background-size: 70%
+
+# ggplot2 learning curve
+
+.footnote[Source: https://github.com/jennybc/ggplot2-tutorial]
+
+---
+class: top
+background-image: url(fig/grammar-of-graphics.png)
+background-position: 50% 80%
+background-size: 50%
+
+# ggplot2
+
+Based on the Grammar of Graphics (book by Leland Wilkinson, 1999/2005) -- idea that every graph can be built from the same components. Results in a very flexible framework for plotting. 
+
+---
+class: top
+
+# ggplot2 
+
+![](fig/ggplot2-cheatsheet1.png)
+
+![](fig/ggplot2-cheatsheet2.png)
+
+
+---
+
+### TCGA breast cancer data set
+
+* Phenotypes:
+    * age
+    * ER status (estrogen-receptor-positive or negative)
+    * PAM50 cancer subtype
+* Gene expression data:
+    * `log(x+1)` transformed expression for all genes
+    * PCA has been applied to expression data =&gt; PC1 and PC2 provided
+
+Prepared data frame:
+
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt;   &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; id &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; age &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; ER_status &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; PAM50 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; pc1 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; pc2 &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; 800 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; TCGA-E2-A150 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 48 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Negative &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Basal &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -1.8488457 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.0390611 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; 180 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; TCGA-A8-A07E &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 81 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Positive &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; LumA &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.3132872 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.7657378 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; 509 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; TCGA-B6-A40B &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 76 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Positive &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; NA &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.7771889 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.2705657 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; 761 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; TCGA-D8-A27I &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 58 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Positive &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; LumA &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.4582089 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -1.6383442 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+--
+
+**Question**: Do different subtypes have different expression profiles?
+
+---
+
+# ggplot2 call
+
+
+```r
+library(ggplot2)
+
+ggplot(df, aes(x = pc1, y = pc2))
+```
+
+![](slides_files/figure-html/unnamed-chunk-16-1.png)&lt;!-- --&gt;
+
+---
+
+# ggplot2 call: scatterplot
+
+
+```r
+ggplot(df, aes(x = pc1, y = pc2)) + 
+  geom_point()
+```
+
+![](slides_files/figure-html/unnamed-chunk-17-1.png)&lt;!-- --&gt;
+
+---
+
+# scatterplot, colour by ER_status
+
+
+
+```r
+ggplot(df, aes(x = pc1, y = pc2, col = ER_status)) + 
+  geom_point()
+```
+
+![](slides_files/figure-html/unnamed-chunk-18-1.png)&lt;!-- --&gt;
+
+---
+
+# scatterplot, colour by PAM50 subtype
+
+
+
+```r
+ggplot(df, aes(x = pc1, y = pc2, col = PAM50)) + 
+  geom_point()
+```
+
+![](slides_files/figure-html/unnamed-chunk-19-1.png)&lt;!-- --&gt;
+
+---
+
+# facet by subtype
+
+
+```r
+ggplot(df, aes(x = pc1, y = pc2)) + 
+  geom_point() +
+* facet_wrap(~ PAM50)
+```
+
+![](slides_files/figure-html/unnamed-chunk-20-1.png)&lt;!-- --&gt;
+
+---
+
+# Lets explore the age distribution
+
+--
+
+.pull-left[
+
+```r
+ggplot(df, aes(x = age)) + 
+  geom_histogram()
+```
+
+![](slides_files/figure-html/unnamed-chunk-21-1.png)&lt;!-- --&gt;
+]
+
+--
+
+.pull-right[
+
+```r
+ggplot(df, aes(x = age)) + 
+  geom_density()
+```
+
+![](slides_files/figure-html/unnamed-chunk-22-1.png)&lt;!-- --&gt;
+]
+
+---
+
+# Is age correlated with PC1?
+
+--
+
+
+```r
+ggplot(df, aes(x = age, y = pc1)) + 
+  geom_point()
+```
+
+![](slides_files/figure-html/unnamed-chunk-23-1.png)&lt;!-- --&gt;
+
+---
+
+# Is age correlated with PC1?
+
+
+```r
+ggplot(df, aes(x = age, y = pc1)) + 
+  geom_point() +
+* geom_smooth(method="lm")
+```
+
+![](slides_files/figure-html/unnamed-chunk-24-1.png)&lt;!-- --&gt;
+
+---
+
+# aes() for different layers
+
+Every layer can have its own aesthetics. 
+
+Here, we have only one layer `geom_point()`, so all of the following are equivalent
+
+
+```r
+ggplot(df, aes(x = age, y = pc1, col = ER_status)) + 
+  geom_point()
+```
+
+
+```r
+ggplot(df, aes(x = age, y = pc1)) + 
+  geom_point(aes(col = ER_status))
+```
+
+
+```r
+ggplot(df) + 
+  geom_point(aes(x = age, y = pc1, col = ER_status))
+```
+
+---
+
+# aes() for different layers
+
+.pull-left[
+Here `aes(col = ER_status)` is shared for both layers.
+
+```r
+ggplot(df, aes(x = age, y = pc1, col = ER_status)) + 
+  geom_point() + 
+  geom_smooth(method="lm")
+```
+
+![](slides_files/figure-html/unnamed-chunk-28-1.png)&lt;!-- --&gt;
+]
+
+.pull-right[
+Here `aes(col = ER_status)` is specified for `geom_point()` only.
+
+```r
+ggplot(df, aes(x = age, y = pc1)) + 
+  geom_point(aes(col = ER_status)) + 
+  geom_smooth(method="lm")
+```
+
+![](slides_files/figure-html/unnamed-chunk-29-1.png)&lt;!-- --&gt;
+]
+
+---
+
+# aes(): specifying colour manually
+
+.pull-left[
+
+```r
+ggplot(df, aes(x = age, y = pc1)) + 
+  geom_point(col = "green")
+```
+
+![](slides_files/figure-html/unnamed-chunk-30-1.png)&lt;!-- --&gt;
+]
+
+.pull-right[
+
+```r
+ggplot(df, aes(x = age, y = pc1)) + 
+  geom_point(aes(col = "green"))
+```
+
+![](slides_files/figure-html/unnamed-chunk-31-1.png)&lt;!-- --&gt;
+]
+
+---
+
+Lets come back to 
+
+![](slides_files/figure-html/unnamed-chunk-32-1.png)&lt;!-- --&gt;
+
+PC1 seems to distinguish well between 
+
+1. ER-positive and ER-negative cancers
+2. between PAM50 subtypes
+
+What is a good way to visualise this? 
+
+---
+
+For example, you could consider
+
+
+
+
+.pull-left[
+![](slides_files/figure-html/unnamed-chunk-34-1.png)&lt;!-- --&gt;
+![](slides_files/figure-html/unnamed-chunk-35-1.png)&lt;!-- --&gt;
+]
+
+.pull-right[
+![](slides_files/figure-html/unnamed-chunk-36-1.png)&lt;!-- --&gt;
+![](slides_files/figure-html/unnamed-chunk-37-1.png)&lt;!-- --&gt;
+]
+
+---
+
+# Tweaking
+
+* Combining layers
+* Add transparency using `alpha = 0.5`
+* Changing the default theme:
+    * `+ theme_bw()`
+    * `+ theme_classic()`
+    * etc, see also the ggthemes package
+* Check out the ggplot2 cheat sheet by RStudio
+* Various ggplot2 extensions http://www.ggplot2-exts.org/
+
+
+.pull-left[
+![](slides_files/figure-html/unnamed-chunk-38-1.png)&lt;!-- --&gt;
+]
+
+.pull-right[
+![](slides_files/figure-html/unnamed-chunk-39-1.png)&lt;!-- --&gt;
+]
+
+---
+
+# Further tweaking
+
+Adding points to the background
+
+.pull-left[
+![](slides_files/figure-html/unnamed-chunk-40-1.png)&lt;!-- --&gt;
+]
+.pull-right[
+![](slides_files/figure-html/unnamed-chunk-41-1.png)&lt;!-- --&gt;
+]
+
+---
+
+# Your turn
+
+![](slides_files/figure-html/unnamed-chunk-42-1.png)&lt;!-- --&gt;
+
+Design an informative (and nice) visualisation for showing how well PC1 distinguishes between PAM50 subtypes. 
+
+
+---
+
+
+**Note**: So far we have been using a nice clean prepared data set. But in reality, they came from two different data sources:
+
+* clinical variables / phenotypes
+* gene expression data
+
+=&gt; In practice, data cleaning is the most time consuming part of the analysis. 
+
+---
+background-image: url(fig/tidyverse_data_science.png)
+background-position: 50% 50%
+background-size: 60%
+
+# Data exploration workflow
+
+
+.footnote[Source: https://lsru.github.io/tv_course]
+
+---
+
+class: inverse, middle
+
+# Data transformation using dplyr
+
+---
+
+# Subset rows with filter()
+
+![](fig/dplyr_filter.png)
+
+Example: 
+
+
+```r
+filter(df, ER_status == "Positive")
+```
+
+
+```r
+filter(df, ER_status == "Positive", PAM50 %in% c("LumA", "LumB"))
+```
+
+---
+
+# Subset columns with select()
+
+![](fig/dplyr_select.png)
+
+Example: 
+
+
+```r
+select(df, id, pc1, pc2)
+```
+
+Or exclude certain columns
+
+
+```r
+select(df, -ER_status, -PAM50)
+```
+
+---
+# Add a new column with mutate()
+
+![](fig/dplyr_mutate.png)
+
+Example: 
+
+
+```r
+mutate(df, scaled_pc1 = 100 * pc1)
+```
+
+---
+
+### group_by() and summarise()
+
+![](fig/dplyr_group_by_summarize.png)
+
+Example: 
+
+
+```r
+grouped_df &lt;- group_by(df, ER_status)
+summarise(grouped_df, count = n(), mean_pc1 = mean(pc1))
+```
+
+```
+## # A tibble: 2 x 3
+##   ER_status count   mean_pc1
+##       &lt;chr&gt; &lt;int&gt;      &lt;dbl&gt;
+## 1  Negative   235 -1.4394317
+## 2  Positive   799  0.4233008
+```
+
+---
+
+# Pipes `%&gt;%`
+
+Introducing `%&gt;%`, to help you write code in a way that easier to read and understand.
+
+`g(f(x))` can be rewritten using the pipe `x %&gt;% f() %&gt;% g()`
+
+
+--
+
+E.g. the following
+
+
+```r
+df_filtered &lt;- filter(df, ER_status == "Positive")
+grouped_df &lt;- group_by(df, PAM50)
+summarise(grouped_df, count = n(), mean_pc1 = mean(pc1))
+```
+
+can be rewritten 
+
+
+```r
+df %&gt;%
+  filter(ER_status == "Positive") %&gt;%
+  group_by(PAM50) %&gt;%
+  summarise(count = n(), mean_pc1 = mean(pc1))
+```
+
+--
+
+* No need for storing intermediate variables.
+* Easier to read and write.
+
+---
+
+# Dplyr in one slide
+
+* Pick observations by their values (`filter()`)
+* Reorder the rows (`arrange()`, `arrange(desc())`)
+* Pick a random subset of rows (`sample_frac()`, `sample_n()`)
+* Pick top n rows (`top_n()`)
+* Pick variables by their names (`select()`)
+* Create new variables with functions of existing variables (`mutate()`)
+* Collapse many values down to a single summary (`summarise()`)
+
+--
+
+All of these functions follow a common design:
+
+* The first argument is a data frame.
+* The subsequent arguments describe what to do with the data frame, using the variable names (without quotes).
+* The result is a new data frame.
+
+---
+
+# Your turn
+
+1. Order the PAM50 subtypes by the number of observations in each subtype. 
+2. Calculate the mean PC1 and PC2 value for every PAM50 subtype. Can you add this to the PC1-PC2 scatterplot?
+
+---
+
+# Tidy data
+
+&gt; “Tidy datasets are all alike, but every messy dataset is messy in its own way.” –– Hadley Wickham
+
+1. Each variable must have its own column. 
+2. Each observation must have its own row. 
+3. Each value must have its own cell.
+
+--
+
+![](http://r4ds.had.co.nz/images/tidy-1.png)
+
+When unsure, we should ask ourselves: Is our data trapped in column names? Column headers should be variable names (but not values). 
+
+---
+
+# Tidy vs untidy data
+
+![](fig/tidy_vs_untidy.png)
+
+.footnote[Source: slides by David Zimmermann]
+
+---
+
+# tidyr for converting between the two formats
+
+![](fig/tidyr_gather2.png)
+
+---
+
+![](fig/tidy_vs_untidy.png)
+
+Converting from wide format to tidy
+
+
+```r
+data %&gt;%
+  gather(key = "Name", value = "Sales", -year)
+```
+
+---
+
+# Your turn
+
+What is tidy format for a gene expression matrix?
+
+
+```r
+df_exprs &lt;- readRDS("data/TCGA_exprs.rds")
+```
+
+![](fig/exprs_matrix.png)
+
+Convert this gene expression data into a tidy format using `tidyr::gather()`. 
+
+---
+class: top
+background-image: url(fig/join0.png)
+background-position: 50% 60%
+background-size: 40%
+
+# Joining data frames
+
+.footnote[Source: slides by David Zimmermann]
+
+---
+# inner_join()
+
+![](fig/join1.png)
+
+---
+# full_join()
+
+![](fig/join2.png)
+
+---
+# left_join()
+
+![](fig/join3.png)
+
+---
+class: center, top
+background-image: url(https://raw.githubusercontent.com/LSRU/r_workshop/gh-pages/img/drob_r_pipeline_450.png)
+background-position: 50% 60%
+background-size: 60%
+
+# Data science workflow within tidyverse
+
+---
+class: center, top
+background-image: url(fig/shiny_gallery.png)
+background-position: 50% 60%
+background-size: 70%
+
+# Creating interactive visualisations
+
+Turn your static figures into an interactive app with little effort using Shiny https://shiny.rstudio.com/gallery/
+
+---
+class: inverse, middle, center
+
+## kaspar.martens@gmail.com
+    </textarea>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function() {
+  var d = document, s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})();</script>
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+  }
+});
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
