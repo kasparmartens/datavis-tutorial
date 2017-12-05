@@ -280,6 +280,22 @@ background-size: 40%
 
 ---
 class: top
+background-image: url(http://hadley.nz/hadley-wickham.jpg)
+background-position: 50% 60%
+background-size: 40%
+
+Hadley Wickham (http://hadley.nz/):
+
+* author of many widely used R packages, including ggplot2
+* introduced the concept of tidy data and key contributor to the tidyverse
+* author of many excellent books, including
+    * R for Data Science http://r4ds.had.co.nz/
+    * Advanced R http://adv-r.had.co.nz/
+    * etc
+    
+
+---
+class: top
 background-image: url(fig/ggplot2-google-image-search.png)
 background-position: 50% 80%
 background-size: 70%
@@ -757,12 +773,15 @@ df %>%
 
 # Dplyr in one slide
 
-* Pick observations by their values (`filter()`).
-* Reorder the rows (`arrange()`).
-* Pick variables by their names (`select()`).
-* Create new variables with functions of existing variables (`mutate()`).
-* Collapse many values down to a single summary (`summarise()`).
+* Pick observations by their values (`filter()`)
+* Reorder the rows (`arrange()`, `arrange(desc())`)
+* Pick a random subset of rows (`sample_frac()`, `sample_n()`)
+* Pick top n rows (`top_n()`)
+* Pick variables by their names (`select()`)
+* Create new variables with functions of existing variables (`mutate()`)
+* Collapse many values down to a single summary (`summarise()`)
 
+--
 
 All of these functions follow a common design:
 
@@ -791,44 +810,76 @@ All of these functions follow a common design:
 
 ![](http://r4ds.had.co.nz/images/tidy-1.png)
 
+When unsure, we should ask ourselves: Is our data trapped in column names? Column headers should be variable names (but not values). 
+
 ---
 
 # Tidy vs untidy data
 
 ![](fig/tidy_vs_untidy.png)
 
---
-
-What is tidy format for a gene expression matrix?
-
-We should ask ourselves: Is our data trapped in column names? Column headers should be variable names (but not values). -- When we want to perform an operation/calculation *for every gene*, this is the case. 
-
-.footnote[Fig source: http://eriqande.github.io/rep-res-web/lectures/]
+.footnote[Source: slides by David Zimmermann]
 
 ---
 
 # tidyr for converting between the two formats
 
-![](http://r4ds.had.co.nz/images/tidy-9.png)
+![](fig/tidyr_gather2.png)
 
---
+---
 
-![](fig/tidyr_gather.png)
+![](fig/tidy_vs_untidy.png)
+
+Converting from wide format to tidy
+
+```{r, eval=FALSE}
+data %>%
+  gather(key = "Name", value = "Sales", -year)
+```
 
 ---
 
 # Your turn
 
+What is tidy format for a gene expression matrix?
+
+```{r, eval=FALSE}
+df_exprs <- readRDS("data/TCGA_exprs.rds")
+```
+
+![](fig/exprs_matrix.png)
+
+Convert this gene expression data into a tidy format using `tidyr::gather()`. 
+
 ---
+class: top
+background-image: url(fig/join0.png)
+background-position: 50% 60%
+background-size: 40%
 
 # Joining data frames
 
+.footnote[Source: slides by David Zimmermann]
 
+---
+# inner_join()
+
+![](fig/join1.png)
+
+---
+# full_join()
+
+![](fig/join2.png)
+
+---
+# left_join()
+
+![](fig/join3.png)
 
 ---
 class: center, top, inverse
 background-image: url(https://raw.githubusercontent.com/LSRU/r_workshop/gh-pages/img/drob_r_pipeline_450.png)
-background-position: 50% 80%
-background-size: 40%
+background-position: 50% 60%
+background-size: 60%
 
-Tidyverse workflow
+# Data science workflow within tidyverse
