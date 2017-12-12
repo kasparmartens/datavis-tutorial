@@ -5,8 +5,7 @@
     <meta charset="utf-8">
     <meta name="author" content="Kaspar Märtens" />
     <meta name="date" content="2017-05-12" />
-    <link href="libs/remark-css/default.css" rel="stylesheet" />
-    <link href="libs/remark-css/default-fonts.css" rel="stylesheet" />
+    <link href="libs/remark-css/example.css" rel="stylesheet" />
   </head>
   <body>
     <textarea id="source">
@@ -187,7 +186,7 @@ cor(x, y)
 .pull-right[
 Scatterplot immediately reveals the structure
 
-![](slides_files/figure-html/unnamed-chunk-5-1.png)&lt;!-- --&gt;
+![](2017_12_05_slides_files/figure-html/unnamed-chunk-5-1.png)&lt;!-- --&gt;
 ]
 
 ---
@@ -217,17 +216,17 @@ Before launching your ML model, you should have a rough idea about:
 
 
 
-![](slides_files/figure-html/unnamed-chunk-8-1.png)&lt;!-- --&gt;
+![](2017_12_05_slides_files/figure-html/unnamed-chunk-8-1.png)&lt;!-- --&gt;
 
 ---
 # Why you should first visualise your data before launching an ML algorithm
 
-![](slides_files/figure-html/unnamed-chunk-9-1.png)&lt;!-- --&gt;
+![](2017_12_05_slides_files/figure-html/unnamed-chunk-9-1.png)&lt;!-- --&gt;
 
 ---
 # Why you should first visualise your data before launching an ML algorithm
 
-![](slides_files/figure-html/unnamed-chunk-10-1.png)&lt;!-- --&gt;
+![](2017_12_05_slides_files/figure-html/unnamed-chunk-10-1.png)&lt;!-- --&gt;
 
 ---
 class: inverse, middle
@@ -242,21 +241,21 @@ Do groups A and B have a significantly different measurements x?
 
 
 
-![](slides_files/figure-html/unnamed-chunk-12-1.png)&lt;!-- --&gt;
+![](2017_12_05_slides_files/figure-html/unnamed-chunk-12-1.png)&lt;!-- --&gt;
 
 ---
 # Are summary statistics good enough?
 
 Do groups A and B have a significantly different measurements x?
 
-![](slides_files/figure-html/unnamed-chunk-13-1.png)&lt;!-- --&gt;
+![](2017_12_05_slides_files/figure-html/unnamed-chunk-13-1.png)&lt;!-- --&gt;
 
 ---
 # Are summary statistics good enough?
 
 Do groups A and B have a significantly different measurements x?
 
-![](slides_files/figure-html/unnamed-chunk-14-1.png)&lt;!-- --&gt;
+![](2017_12_05_slides_files/figure-html/unnamed-chunk-14-1.png)&lt;!-- --&gt;
 
 --
 
@@ -478,7 +477,7 @@ library(ggplot2)
 ggplot(df, aes(x = pc1, y = pc2))
 ```
 
-![](slides_files/figure-html/unnamed-chunk-16-1.png)&lt;!-- --&gt;
+![](2017_12_05_slides_files/figure-html/unnamed-chunk-16-1.png)&lt;!-- --&gt;
 
 ---
 
@@ -490,7 +489,7 @@ ggplot(df, aes(x = pc1, y = pc2)) +
   geom_point()
 ```
 
-![](slides_files/figure-html/unnamed-chunk-17-1.png)&lt;!-- --&gt;
+![](2017_12_05_slides_files/figure-html/unnamed-chunk-17-1.png)&lt;!-- --&gt;
 
 ---
 
@@ -503,7 +502,7 @@ ggplot(df, aes(x = pc1, y = pc2, col = ER_status)) +
   geom_point()
 ```
 
-![](slides_files/figure-html/unnamed-chunk-18-1.png)&lt;!-- --&gt;
+![](2017_12_05_slides_files/figure-html/unnamed-chunk-18-1.png)&lt;!-- --&gt;
 
 ---
 
@@ -516,7 +515,7 @@ ggplot(df, aes(x = pc1, y = pc2, col = PAM50)) +
   geom_point()
 ```
 
-![](slides_files/figure-html/unnamed-chunk-19-1.png)&lt;!-- --&gt;
+![](2017_12_05_slides_files/figure-html/unnamed-chunk-19-1.png)&lt;!-- --&gt;
 
 ---
 
@@ -529,7 +528,7 @@ ggplot(df, aes(x = pc1, y = pc2)) +
 * facet_wrap(~ PAM50)
 ```
 
-![](slides_files/figure-html/unnamed-chunk-20-1.png)&lt;!-- --&gt;
+![](2017_12_05_slides_files/figure-html/unnamed-chunk-20-1.png)&lt;!-- --&gt;
 
 ---
 
@@ -544,7 +543,7 @@ ggplot(df, aes(x = age)) +
   geom_histogram()
 ```
 
-![](slides_files/figure-html/unnamed-chunk-21-1.png)&lt;!-- --&gt;
+![](2017_12_05_slides_files/figure-html/unnamed-chunk-21-1.png)&lt;!-- --&gt;
 ]
 
 --
@@ -556,7 +555,7 @@ ggplot(df, aes(x = age)) +
   geom_density()
 ```
 
-![](slides_files/figure-html/unnamed-chunk-22-1.png)&lt;!-- --&gt;
+![](2017_12_05_slides_files/figure-html/unnamed-chunk-22-1.png)&lt;!-- --&gt;
 ]
 
 ---
@@ -571,7 +570,7 @@ ggplot(df, aes(x = age, y = pc1)) +
   geom_point()
 ```
 
-![](slides_files/figure-html/unnamed-chunk-23-1.png)&lt;!-- --&gt;
+![](2017_12_05_slides_files/figure-html/unnamed-chunk-23-1.png)&lt;!-- --&gt;
 
 ---
 
@@ -584,7 +583,7 @@ ggplot(df, aes(x = age, y = pc1)) +
 * geom_smooth(method="lm")
 ```
 
-![](slides_files/figure-html/unnamed-chunk-24-1.png)&lt;!-- --&gt;
+![](2017_12_05_slides_files/figure-html/unnamed-chunk-24-1.png)&lt;!-- --&gt;
 
 ---
 
@@ -625,7 +624,7 @@ ggplot(df, aes(x = age, y = pc1, col = ER_status)) +
   geom_smooth(method="lm")
 ```
 
-![](slides_files/figure-html/unnamed-chunk-28-1.png)&lt;!-- --&gt;
+![](2017_12_05_slides_files/figure-html/unnamed-chunk-28-1.png)&lt;!-- --&gt;
 ]
 
 .pull-right[
@@ -637,7 +636,7 @@ ggplot(df, aes(x = age, y = pc1)) +
   geom_smooth(method="lm")
 ```
 
-![](slides_files/figure-html/unnamed-chunk-29-1.png)&lt;!-- --&gt;
+![](2017_12_05_slides_files/figure-html/unnamed-chunk-29-1.png)&lt;!-- --&gt;
 ]
 
 ---
@@ -651,7 +650,7 @@ ggplot(df, aes(x = age, y = pc1)) +
   geom_point(col = "green")
 ```
 
-![](slides_files/figure-html/unnamed-chunk-30-1.png)&lt;!-- --&gt;
+![](2017_12_05_slides_files/figure-html/unnamed-chunk-30-1.png)&lt;!-- --&gt;
 ]
 
 .pull-right[
@@ -661,14 +660,14 @@ ggplot(df, aes(x = age, y = pc1)) +
   geom_point(aes(col = "green"))
 ```
 
-![](slides_files/figure-html/unnamed-chunk-31-1.png)&lt;!-- --&gt;
+![](2017_12_05_slides_files/figure-html/unnamed-chunk-31-1.png)&lt;!-- --&gt;
 ]
 
 ---
 
 Lets come back to 
 
-![](slides_files/figure-html/unnamed-chunk-32-1.png)&lt;!-- --&gt;
+![](2017_12_05_slides_files/figure-html/unnamed-chunk-32-1.png)&lt;!-- --&gt;
 
 PC1 seems to distinguish well between 
 
@@ -685,13 +684,13 @@ For example, you could consider
 
 
 .pull-left[
-![](slides_files/figure-html/unnamed-chunk-34-1.png)&lt;!-- --&gt;
-![](slides_files/figure-html/unnamed-chunk-35-1.png)&lt;!-- --&gt;
+![](2017_12_05_slides_files/figure-html/unnamed-chunk-34-1.png)&lt;!-- --&gt;
+![](2017_12_05_slides_files/figure-html/unnamed-chunk-35-1.png)&lt;!-- --&gt;
 ]
 
 .pull-right[
-![](slides_files/figure-html/unnamed-chunk-36-1.png)&lt;!-- --&gt;
-![](slides_files/figure-html/unnamed-chunk-37-1.png)&lt;!-- --&gt;
+![](2017_12_05_slides_files/figure-html/unnamed-chunk-36-1.png)&lt;!-- --&gt;
+![](2017_12_05_slides_files/figure-html/unnamed-chunk-37-1.png)&lt;!-- --&gt;
 ]
 
 ---
@@ -709,11 +708,11 @@ For example, you could consider
 
 
 .pull-left[
-![](slides_files/figure-html/unnamed-chunk-38-1.png)&lt;!-- --&gt;
+![](2017_12_05_slides_files/figure-html/unnamed-chunk-38-1.png)&lt;!-- --&gt;
 ]
 
 .pull-right[
-![](slides_files/figure-html/unnamed-chunk-39-1.png)&lt;!-- --&gt;
+![](2017_12_05_slides_files/figure-html/unnamed-chunk-39-1.png)&lt;!-- --&gt;
 ]
 
 ---
@@ -723,17 +722,17 @@ For example, you could consider
 Adding points to the background
 
 .pull-left[
-![](slides_files/figure-html/unnamed-chunk-40-1.png)&lt;!-- --&gt;
+![](2017_12_05_slides_files/figure-html/unnamed-chunk-40-1.png)&lt;!-- --&gt;
 ]
 .pull-right[
-![](slides_files/figure-html/unnamed-chunk-41-1.png)&lt;!-- --&gt;
+![](2017_12_05_slides_files/figure-html/unnamed-chunk-41-1.png)&lt;!-- --&gt;
 ]
 
 ---
 
 # Your turn
 
-![](slides_files/figure-html/unnamed-chunk-42-1.png)&lt;!-- --&gt;
+![](2017_12_05_slides_files/figure-html/unnamed-chunk-42-1.png)&lt;!-- --&gt;
 
 Design an informative (and nice) visualisation for showing how well PC1 distinguishes between PAM50 subtypes. 
 
@@ -1009,15 +1008,8 @@ class: inverse, middle, center
 "highlightLines": true,
 "countIncrementalSlides": false
 });
-if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
-  window.dispatchEvent(new Event('resize'));
-});
-(function() {
-  var d = document, s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
-  if (!r) return;
-  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
-  d.head.appendChild(s);
-})();</script>
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {window.dispatchEvent(new Event('resize'));});
+(function() {var d = document, s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler"); if (!r) return; s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }"; d.head.appendChild(s);})();</script>
 
 <script type="text/x-mathjax-config">
 MathJax.Hub.Config({

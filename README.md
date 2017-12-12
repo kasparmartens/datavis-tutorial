@@ -24,4 +24,4 @@ Select `Version Control`, then `Git` and copy-paste the following link into `Rep
 
 If you're already well familiar with ggplot2, I suggest you read up on how to create ggplot2 extensions, i.e. how to write your own custom `geom_XXX()` or `stat_XXX()`. 
 
-https://cran.r-project.org/web/packages/ggplot2/vignettes/extending-ggplot2.html
+See [vignette on extending ggplot2](https://cran.r-project.org/web/packages/ggplot2/vignettes/extending-ggplot2.html)

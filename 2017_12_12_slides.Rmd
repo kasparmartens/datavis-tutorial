@@ -259,6 +259,8 @@ Possible approaches:
 
 * Use a model / summary statistic to pick out interesting variables
 
+* Heatmap (with clustering) can be helpful
+
 Ideally, a combination of the above
 
 ---
