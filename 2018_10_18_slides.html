@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>How to effectively use visualisation while doing Exploratory Data Analysis</title>
+    <meta charset="utf-8">
+    <meta name="author" content="Kaspar Märtens" />
+    <meta name="date" content="2018-10-18" />
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link href="libs/remark-css/default-fonts.css" rel="stylesheet" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# How to effectively use visualisation while doing Exploratory Data Analysis
+### Kaspar Märtens
+### 18 October 2018
+
+---
+
+
+
+
+class: inverse
+
+## Today:
+
+1. Why I think R is really great
+
+2. Why visualise data at all? 
+
+3. Good practices and design choices involved when making graphs
+
+4. Focus on the use of visualisations as part of data exploration -- ggplot2 is especially useful for this
+
+---
+class: inverse, middle, center
+
+# Why I think R is great
+
+---
+class: top, inverse
+background-image: url(https://lsru.github.io/tv_course/img/01_tidyverse_components.png)
+background-position: 50% 90%
+background-size: 40%
+
+# Tidyverse
+
+A popular collection of R packages for data import, manipulation, exploration and visualization.
+
+
+* Unified and consistent design and API (unlike base R)
+* Intuitive underlying philosophy
+* Easy-to-learn
+* Easy to get help: large community on stackoverflow, twitter #rstats etc
+
+---
+class: top, inverse
+background-image: url(http://hexb.in/vector/ggplot2.svg)
+background-position: 50% 80%
+background-size: 40%
+
+# ggplot2
+
+
+---
+class: top, inverse
+background-image: url(http://r4ds.had.co.nz/rmarkdown/diamond-sizes-report.png)
+background-position: 50% 60%
+background-size: 75%
+
+# R Markdown
+
+--
+.footnote[Note that these slides have been written in RMarkdown, using the xaringan package https://github.com/yihui/xaringan]
+
+---
+class: inverse
+
+background-image: url(fig/shiny_gallery.png)
+background-position: 50% 80%
+background-size: 80%
+
+# Shiny
+
+Turn your static figures into an interactive app with little effort using Shiny https://shiny.rstudio.com/gallery/
+
+---
+class: inverse
+
+# gganimate
+
+
+![](https://raw.githubusercontent.com/kasparmartens/2018_10_gganimate/master/fig/gapminder_anim.gif)
+
+
+---
+class: inverse
+
+# gganimate
+
+.center[
+  ![:scale 60%](https://user-images.githubusercontent.com/4210929/44226624-2f711680-a156-11e8-9776-598396a91032.gif)
+]
+
+.footnote[Source: https://github.com/thomasp85/gganimate/wiki/Moving-Hawaii-and-Alaksa]
+
+---
+class: inverse, middle, center
+
+# Are visualisations useful?
+
+---
+class: middle
+
+Consider the following data (N=20, p=2)
+
+
+
+.pull-left[
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:right;"&gt; x &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; y &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 1.851 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.757 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 0.891 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.791 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 0.598 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.909 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 0.546 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.924 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; -0.195 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.991 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; -1.388 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.440 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; -1.458 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.369 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; -1.493 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.331 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; -2.000 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.029 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; -1.794 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.884 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+]
+
+.pull-right[
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt;   &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; x &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; y &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; 11 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -1.377 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -1.450 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; 12 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -1.063 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -1.694 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; 13 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.771 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -1.845 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; 14 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.404 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -1.959 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; 15 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.249 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -1.984 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; 16 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.593 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -1.209 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; 17 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.606 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -1.192 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; 18 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.676 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -1.091 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; 19 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.880 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.681 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; 20 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.997 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.102 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+]
+
+
+---
+class: middle
+
+.pull-left[
+
+```r
+mean(x)
+```
+
+```
+## [1] 0.04724152
+```
+
+```r
+mean(y)
+```
+
+```
+## [1] -0.07760144
+```
+
+```r
+cor(x, y)
+```
+
+```
+## [1] -0.0304444
+```
+]
+
+--
+
+.pull-right[
+Scatterplot immediately reveals the structure
+
+![](2018_10_18_slides_files/figure-html/unnamed-chunk-5-1.png)&lt;!-- --&gt;
+]
+
+---
+# Some visualisations are more useful than others
+
+.pull-left[
+![](2018_10_18_slides_files/figure-html/unnamed-chunk-6-1.png)&lt;!-- --&gt;
+]
+
+.pull-right[
+![](2018_10_18_slides_files/figure-html/unnamed-chunk-7-1.png)&lt;!-- --&gt;
+]
+
+--
+.footnote[Inspired by the talk "How Humans See Data" by John Rauser]
+
+---
+class: inverse, middle, centre
+
+# How can we visualise the distribution of a continuous variable?
+
+---
+background-image: url(fig/quiz1.png)
+background-position: 50% 30%
+background-size: 100%
+
+
+---
+background-image: url(fig/quiz2.png)
+background-position: 50% 30%
+background-size: 100%
+
+
+---
+# Can a histogram be misleading?
+
+--
+
+.pull-left[
+  ![](https://i.stack.imgur.com/2ZGib.png)
+]
+
+--
+
+.pull-right[
+  ![](https://i.stack.imgur.com/BXTVX.png)
+]
+
+.footnote[Source: https://stats.stackexchange.com/a/51753]
+
+---
+class: inverse, middle, centre
+
+# How can we visualise the distribution of a continuous variable, compared across two (or more) groups?
+
+Try to think of as many different approaches as you can. What are the pros and cons of each?
+
+
+---
+class: inverse
+
+# What if there are more than two or three variables?
+
+That is, how to visualise high-dimensional data?
+
+--
+
+Options include:
+
+* visualise a subset of variables, 
+
+    * randomly selected
+    
+    * selection based on summary statistics
+
+* compute summary statistics and visualise those instead
+
+* apply a dimensionality reduction method such as PCA
+
+
+---
+# Do summary statistics capture everything?
+
+--
+
+Do groups A and B have a significantly different measurements x?
+
+
+
+
+![](2018_10_18_slides_files/figure-html/unnamed-chunk-9-1.png)&lt;!-- --&gt;
+
+---
+# Do summary statistics capture everything?
+
+Do groups A and B have a significantly different measurements x?
+
+![](2018_10_18_slides_files/figure-html/unnamed-chunk-10-1.png)&lt;!-- --&gt;
+
+---
+# Do summary statistics capture everything?
+
+Do groups A and B have a significantly different measurements x?
+
+![](2018_10_18_slides_files/figure-html/unnamed-chunk-11-1.png)&lt;!-- --&gt;
+
+--
+
+single summary statistic `&lt;` multiple summary statistics `&lt;` data
+
+---
+class: top
+background-image: url(fig/Anscombes_quartet.png)
+background-position: 50% 60%
+background-size: 50%
+
+# Do summary statistics capture everything?
+
+Is there a significant association between two continuous variables x and y?
+
+.footnote[Source: https://en.wikipedia.org/wiki/Anscombe%27s_quartet]
+
+---
+class: top
+background-image: url(fig/DinoSequentialSmaller.gif)
+background-position: 50% 50%
+background-size: 70%
+
+# Do summary statistics capture everything?
+
+.footnote[Source: https://www.autodeskresearch.com/publications/samestats]
+
+---
+# Simpson's paradox
+
+### Can we trust the patterns that we see?
+
+Subgroup structure (or other variables) may help to explain the patterns
+
+![](fig/simpsons-paradox.gif)
+
+.footnote[Source: https://simplystatistics.org/2017/08/08/code-for-my-educational-gifs/]
+
+
+
+
+---
+class: top, inverse
+background-image: url(http://hexb.in/vector/ggplot2.svg)
+background-position: 50% 80%
+background-size: 40%
+
+# ggplot2
+
+---
+class: top
+background-image: url(http://hadley.nz/hadley-wickham.jpg)
+background-position: 50% 60%
+background-size: 40%
+
+Hadley Wickham (http://hadley.nz/):
+
+* author of many widely used R packages
+    * including ggplot2
+    * introduced the concept of tidy data 
+    * key contributor to the tidyverse
+* author of many excellent books, including
+    * R for Data Science http://r4ds.had.co.nz/
+    * Advanced R http://adv-r.had.co.nz/
+    * etc
+    
+
+---
+class: top
+background-image: url(fig/ggplot2-google-image-search.png)
+background-position: 50% 80%
+background-size: 70%
+
+# ggplot2
+
+* Quickly iterate over a variety of plots (only making minimal changes to the code). 
+* Create publication-quality plots with minimal tweaking. 
+
+.footnote[google image search for "ggplot2"]
+
+---
+class: top
+background-image: url(fig/learning_curve.png)
+background-position: 50% 80%
+background-size: 70%
+
+# ggplot2 learning curve
+
+.footnote[Source: https://github.com/jennybc/ggplot2-tutorial]
+
+---
+class: top
+background-image: url(fig/grammar-of-graphics.png)
+background-position: 50% 80%
+background-size: 50%
+
+# ggplot2
+
+Based on the Grammar of Graphics (book by Leland Wilkinson, 1999/2005) -- idea that every graph can be built from the same components. Results in a very flexible framework for plotting. 
+
+---
+class: top
+
+# ggplot2 
+
+![](fig/ggplot2-cheatsheet1.png)
+
+![](fig/ggplot2-cheatsheet2.png)
+
+
+---
+# Gapminder data
+
+* See the famous TED talk by Hans Rosling https://www.ted.com/talks/hans_rosling_shows_the_best_stats_you_ve_ever_seen
+
+* R package "gapminder" conveniently provides a subset of that data https://github.com/jennybc/gapminder
+
+--
+
+
+```r
+library(gapminder)
+
+head(gapminder)
+```
+
+```
+## # A tibble: 6 x 6
+##   country     continent  year lifeExp      pop gdpPercap
+##   &lt;fct&gt;       &lt;fct&gt;     &lt;int&gt;   &lt;dbl&gt;    &lt;int&gt;     &lt;dbl&gt;
+## 1 Afghanistan Asia       1952    28.8  8425333      779.
+## 2 Afghanistan Asia       1957    30.3  9240934      821.
+## 3 Afghanistan Asia       1962    32.0 10267083      853.
+## 4 Afghanistan Asia       1967    34.0 11537966      836.
+## 5 Afghanistan Asia       1972    36.1 13079460      740.
+## 6 Afghanistan Asia       1977    38.4 14880372      786.
+```
+
+---
+
+# ggplot2 call
+
+
+```r
+library(ggplot2)
+
+ggplot(gapminder, aes(x = gdpPercap, y = lifeExp))
+```
+
+![](2018_10_18_slides_files/figure-html/unnamed-chunk-13-1.png)&lt;!-- --&gt;
+
+---
+# ggplot2 call: scatterplot
+
+
+```r
+library(ggplot2)
+
+ggplot(gapminder, aes(x = gdpPercap, y = lifeExp)) +
+  geom_point()
+```
+
+![](2018_10_18_slides_files/figure-html/unnamed-chunk-14-1.png)&lt;!-- --&gt;
+
+---
+# colour by continent
+
+
+```r
+library(ggplot2)
+
+ggplot(gapminder, aes(x = gdpPercap, y = lifeExp, col = continent)) +
+  geom_point()
+```
+
+![](2018_10_18_slides_files/figure-html/unnamed-chunk-15-1.png)&lt;!-- --&gt;
+
+---
+# change x-axis scale
+
+
+```r
+library(ggplot2)
+
+ggplot(gapminder, aes(x = gdpPercap, y = lifeExp, col = continent)) +
+  geom_point() +
+  scale_x_log10()
+```
+
+![](2018_10_18_slides_files/figure-html/unnamed-chunk-16-1.png)&lt;!-- --&gt;
+
+---
+# facet by continent
+
+
+```r
+library(ggplot2)
+
+ggplot(gapminder, aes(x = gdpPercap, y = lifeExp)) +
+  geom_point() +
+  facet_wrap(~ continent) +
+  scale_x_log10()
+```
+
+![](2018_10_18_slides_files/figure-html/unnamed-chunk-17-1.png)&lt;!-- --&gt;
+
+
+
+---
+# Let's explore life expectancy
+
+--
+
+.pull-left[
+
+```r
+ggplot(gapminder, aes(x = lifeExp)) + 
+  geom_histogram()
+```
+
+![](2018_10_18_slides_files/figure-html/unnamed-chunk-18-1.png)&lt;!-- --&gt;
+]
+
+--
+
+.pull-right[
+
+```r
+ggplot(gapminder, aes(x = lifeExp)) + 
+  geom_density()
+```
+
+![](2018_10_18_slides_files/figure-html/unnamed-chunk-19-1.png)&lt;!-- --&gt;
+]
+
+--
+
+How does this compare across continents? Across years?
+---
+# Let's explore life expectancy (across continents)
+
+.pull-left[
+
+```r
+ggplot(gapminder, aes(x = continent, y = lifeExp)) + 
+  geom_boxplot()
+```
+
+![](2018_10_18_slides_files/figure-html/unnamed-chunk-20-1.png)&lt;!-- --&gt;
+]
+
+.pull-right[
+
+```r
+ggplot(gapminder, aes(x = lifeExp, col = continent)) + 
+  geom_density()
+```
+
+![](2018_10_18_slides_files/figure-html/unnamed-chunk-21-1.png)&lt;!-- --&gt;
+]
+
+--
+
+Can you think of other ways? Try them out! 
+
+---
+
+# aes() for different layers
+
+Every layer can have its own aesthetics. 
+
+Here, we have only one layer `geom_point()`, so all of the following are equivalent
+
+
+```r
+ggplot(gapminder, aes(x = gdpPercap, y = lifeExp, col = continent)) + 
+  geom_point()
+```
+
+
+```r
+ggplot(gapminder, aes(x = gdpPercap, y = lifeExp)) + 
+  geom_point(aes(col = continent))
+```
+
+
+```r
+ggplot(gapminder) + 
+  geom_point(aes(x = gdpPercap, y = lifeExp, col = continent))
+```
+
+---
+
+# aes() for different layers
+
+.pull-left[
+Here `aes(col = continent)` is shared for both layers.
+
+```r
+ggplot(gapminder, aes(gdpPercap, lifeExp, col = continent)) + 
+  geom_point() +
+  geom_smooth() +
+  scale_x_log10()
+```
+
+![](2018_10_18_slides_files/figure-html/unnamed-chunk-25-1.png)&lt;!-- --&gt;
+]
+
+.pull-right[
+Here `aes(col = continent)` is specified for `geom_point()` only.
+
+```r
+ggplot(gapminder, aes(gdpPercap, lifeExp)) + 
+  geom_point(aes(col = continent)) +
+  geom_smooth() +
+  scale_x_log10()
+```
+
+![](2018_10_18_slides_files/figure-html/unnamed-chunk-26-1.png)&lt;!-- --&gt;
+]
+
+---
+
+# aes(): specifying colour manually
+
+.pull-left[
+
+```r
+ggplot(gapminder, aes(gdpPercap, lifeExp)) + 
+  geom_point(col = "green")
+```
+
+![](2018_10_18_slides_files/figure-html/unnamed-chunk-27-1.png)&lt;!-- --&gt;
+]
+
+.pull-right[
+
+```r
+ggplot(gapminder, aes(gdpPercap, lifeExp)) + 
+  geom_point(aes(col = "green"))
+```
+
+![](2018_10_18_slides_files/figure-html/unnamed-chunk-28-1.png)&lt;!-- --&gt;
+]
+
+--
+
+Good resource for choosing colours: http://colorbrewer2.org
+
+---
+
+# Similarly: every layer can be based on different data
+
+
+```r
+df_europe &lt;- subset(gapminder, continent == "Europe")
+
+ggplot() + 
+  geom_point(aes(gdpPercap, lifeExp), data = gapminder, col = "grey50") +
+  geom_point(aes(gdpPercap, lifeExp), data = df_europe, col = "red") +
+  scale_x_log10()
+```
+
+![](2018_10_18_slides_files/figure-html/unnamed-chunk-29-1.png)&lt;!-- --&gt;
+
+---
+# Tweaking your plot appearance
+
+* Combining layers
+
+* Add transparency using `alpha = 0.5`
+
+* Changing the default theme:
+    * `+ theme_bw()`
+    * `+ theme_classic()`
+    * etc, see also the ggthemes package
+* Check out the ggplot2 cheat sheet by RStudio
+
+* Axis limits 
+    
+    * `+ coord_cartesian(ylim = c(-3, 5))`
+    
+* Title, subtitle, caption 
+    
+    * `+ labs(title = "", subtitle = "")`
+
+---
+
+![](2018_10_18_slides_files/figure-html/unnamed-chunk-30-1.png)&lt;!-- --&gt;
+
+
+---
+background-image: url(fig/ggridges_ex1.jpg)
+background-position: 50% 80%
+background-size: 50%
+
+# ggplot2 extensions 
+
+http://www.ggplot2-exts.org/
+
+ggridges
+
+---
+background-image: url(fig/ggridges_ex2.png)
+background-position: 50% 90%
+background-size: 40%
+
+# ggplot2 extensions 
+
+http://www.ggplot2-exts.org/
+
+ggridges
+
+---
+class: inverse
+
+# Great Resources:
+
+* R for Data Science http://r4ds.had.co.nz/
+
+* Fundamentals of Data Visualization https://serialmentor.com/dataviz
+
+---
+
+class: inverse, middle
+
+# Data transformation using dplyr
+
+---
+
+# Subset rows with filter()
+
+![](fig/dplyr_filter.png)
+
+Example: 
+
+
+```r
+filter(gapminder, continent == "Europe")
+```
+
+
+```r
+filter(gapminder, continent == "Europe", year &gt; 2000)
+```
+
+---
+
+# Subset columns with select()
+
+![](fig/dplyr_select.png)
+
+Example: 
+
+
+```r
+select(gapminder, year, continent, lifeExp)
+```
+
+Or exclude certain columns
+
+
+```r
+select(gapminder, -gdpPercap)
+```
+
+---
+# Add a new column with mutate()
+
+![](fig/dplyr_mutate.png)
+
+Example: 
+
+
+```r
+mutate(gapminder, total_gdp = pop * gdpPercap)
+```
+
+---
+
+### group_by() and summarise()
+
+![](fig/dplyr_group_by_summarize.png)
+
+Example: 
+
+
+```r
+grouped_df &lt;- group_by(gapminder, continent)
+summarise(grouped_df, count = n(), mean_lifeExp = mean(lifeExp))
+```
+
+```
+## # A tibble: 5 x 3
+##   continent count mean_lifeExp
+##   &lt;fct&gt;     &lt;int&gt;        &lt;dbl&gt;
+## 1 Africa      624         48.9
+## 2 Americas    300         64.7
+## 3 Asia        396         60.1
+## 4 Europe      360         71.9
+## 5 Oceania      24         74.3
+```
+
+---
+
+# Pipes `%&gt;%`
+
+Introducing `%&gt;%`, to help you write code in a way that easier to read and understand.
+
+`g(f(x))` can be rewritten using the pipe `x %&gt;% f() %&gt;% g()`
+
+
+--
+
+E.g. the following
+
+
+```r
+filtered_df &lt;- filter(gapminder, continent != "Oceania")
+grouped_df &lt;- group_by(filtered_df, continent)
+summarise(grouped_df, count = n(), mean_lifeExp = mean(lifeExp))
+```
+
+can be rewritten 
+
+
+```r
+gapminder %&gt;%
+  filter(continent != "Oceania") %&gt;%
+  group_by(continent) %&gt;%
+  summarise(count = n(), mean_lifeExp = mean(lifeExp))
+```
+
+--
+
+* No need for storing intermediate variables.
+* Easier to read and write.
+
+---
+class: inverse, middle, center
+
+## kaspar.martens@gmail.com
+    </textarea>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script src="my-macros.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function() {
+  var d = document, s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})();</script>
+
+<script>
+(function() {
+  var i, text, code, codes = document.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+})();
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

@@ -1,0 +1,781 @@
+---
+title: "How to effectively use visualisation while doing Exploratory Data Analysis"
+subtitle: ""
+author: "Kaspar Märtens"
+date: "18 October 2018"
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    nature:
+      beforeInit: ["my-macros.js"]
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+```
+
+class: inverse
+
+## Today:
+
+1. Why I think R is really great
+
+2. Why visualise data at all? 
+
+3. Good practices and design choices involved when making graphs
+
+4. Focus on the use of visualisations as part of data exploration -- ggplot2 is especially useful for this
+
+---
+class: inverse, middle, center
+
+# Why I think R is great
+
+---
+class: top, inverse
+background-image: url(https://lsru.github.io/tv_course/img/01_tidyverse_components.png)
+background-position: 50% 90%
+background-size: 40%
+
+# Tidyverse
+
+A popular collection of R packages for data import, manipulation, exploration and visualization.
+
+
+* Unified and consistent design and API (unlike base R)
+* Intuitive underlying philosophy
+* Easy-to-learn
+* Easy to get help: large community on stackoverflow, twitter #rstats etc
+
+---
+class: top, inverse
+background-image: url(http://hexb.in/vector/ggplot2.svg)
+background-position: 50% 80%
+background-size: 40%
+
+# ggplot2
+
+
+---
+class: top, inverse
+background-image: url(http://r4ds.had.co.nz/rmarkdown/diamond-sizes-report.png)
+background-position: 50% 60%
+background-size: 75%
+
+# R Markdown
+
+--
+.footnote[Note that these slides have been written in RMarkdown, using the xaringan package https://github.com/yihui/xaringan]
+
+---
+class: inverse
+
+background-image: url(fig/shiny_gallery.png)
+background-position: 50% 80%
+background-size: 80%
+
+# Shiny
+
+Turn your static figures into an interactive app with little effort using Shiny https://shiny.rstudio.com/gallery/
+
+---
+class: inverse
+
+# gganimate
+
+
+![](https://raw.githubusercontent.com/kasparmartens/2018_10_gganimate/master/fig/gapminder_anim.gif)
+
+
+---
+class: inverse
+
+# gganimate
+
+.center[
+  ![:scale 60%](https://user-images.githubusercontent.com/4210929/44226624-2f711680-a156-11e8-9776-598396a91032.gif)
+]
+
+.footnote[Source: https://github.com/thomasp85/gganimate/wiki/Moving-Hawaii-and-Alaksa]
+
+---
+class: inverse, middle, center
+
+# Are visualisations useful?
+
+---
+class: middle
+
+Consider the following data (N=20, p=2)
+
+```{r, echo=FALSE, include=FALSE}
+library(tidyverse)
+set.seed(0)
+t <- sort(runif(20, 0, 2*pi))
+x <- 2*cos(t)
+y <- 2*sin(t)
+df <- data.frame(x, y)
+```
+
+.pull-left[
+```{r, echo=FALSE}
+knitr::kable(round(df[1:10, ], 3), format = 'html')
+```
+]
+
+.pull-right[
+```{r, echo=FALSE}
+knitr::kable(round(df[11:20, ], 3), format = 'html')
+```
+]
+
+
+---
+class: middle
+
+.pull-left[
+```{r}
+mean(x)
+mean(y)
+cor(x, y)
+```
+]
+
+--
+
+.pull-right[
+Scatterplot immediately reveals the structure
+
+```{r, echo=FALSE, fig.height=4, fig.width=4}
+df %>%
+  ggplot(aes(x, y)) + 
+  geom_point(size=3) + 
+  theme_classic()
+```
+]
+
+---
+# Some visualisations are more useful than others
+
+.pull-left[
+```{r, echo=FALSE, fig.height=4, fig.width=5}
+df %>%
+  mutate(index = 1:n()) %>%
+  gather(variable, value, -index) %>%
+  ggplot(aes(index, value, col = variable)) + 
+  geom_line() + 
+  theme_classic()
+```
+]
+
+.pull-right[
+```{r, echo=FALSE, fig.height=4, fig.width=4}
+df %>%
+  mutate(index = 1:n()) %>%
+  ggplot(aes(x, y, col=index)) + 
+  geom_point(size=3) + 
+  theme_classic()
+```
+]
+
+--
+.footnote[Inspired by the talk "How Humans See Data" by John Rauser]
+
+---
+class: inverse, middle, centre
+
+# How can we visualise the distribution of a continuous variable?
+
+---
+background-image: url(fig/quiz1.png)
+background-position: 50% 30%
+background-size: 100%
+
+
+---
+background-image: url(fig/quiz2.png)
+background-position: 50% 30%
+background-size: 100%
+
+
+---
+# Can a histogram be misleading?
+
+--
+
+.pull-left[
+  ![](https://i.stack.imgur.com/2ZGib.png)
+]
+
+--
+
+.pull-right[
+  ![](https://i.stack.imgur.com/BXTVX.png)
+]
+
+.footnote[Source: https://stats.stackexchange.com/a/51753]
+
+---
+class: inverse, middle, centre
+
+# How can we visualise the distribution of a continuous variable, compared across two (or more) groups?
+
+Try to think of as many different approaches as you can. What are the pros and cons of each?
+
+
+---
+class: inverse
+
+# What if there are more than two or three variables?
+
+That is, how to visualise high-dimensional data?
+
+--
+
+Options include:
+
+* visualise a subset of variables, 
+
+    * randomly selected
+    
+    * selection based on summary statistics
+
+* compute summary statistics and visualise those instead
+
+* apply a dimensionality reduction method such as PCA
+
+
+---
+# Do summary statistics capture everything?
+
+--
+
+Do groups A and B have a significantly different measurements x?
+
+
+```{r, echo=FALSE, fig.height=2, fig.width=10}
+n <- 100
+x1 <- ifelse(rbinom(n, 1, 0.5) == 0, rnorm(n, 3), rnorm(n, -3))
+x2 <- rnorm(n, 3)
+cluster <- 
+df <- data.frame(x = c(x1, x2), cluster = c(rep("A", n), rep("B", n))) 
+
+p1 <- df %>%
+  group_by(cluster) %>%
+  summarise(mean = mean(x)) %>%
+  ggplot(aes(cluster, mean, col=cluster)) + 
+  geom_point(size=4) +
+  theme_classic()
+
+p2 <- df %>%
+  ggplot(aes(cluster, x, col=cluster)) + 
+  geom_boxplot() +
+  theme_classic()
+
+
+p3 <- df %>%
+  ggplot(aes(cluster, x, col=cluster)) + 
+  geom_boxplot() +
+  geom_jitter(alpha = 0.5) +
+  theme_classic()
+```
+
+```{r, echo=FALSE, fig.height=2, fig.width=10}
+gridExtra::grid.arrange(p1, ncol=3)
+```
+
+---
+# Do summary statistics capture everything?
+
+Do groups A and B have a significantly different measurements x?
+
+```{r, echo=FALSE, fig.height=2, fig.width=10}
+gridExtra::grid.arrange(p1, p2, ncol=3)
+```
+
+---
+# Do summary statistics capture everything?
+
+Do groups A and B have a significantly different measurements x?
+
+```{r, echo=FALSE, fig.height=2, fig.width=10}
+gridExtra::grid.arrange(p1, p2, p3, ncol=3)
+```
+
+--
+
+single summary statistic `<` multiple summary statistics `<` data
+
+---
+class: top
+background-image: url(fig/Anscombes_quartet.png)
+background-position: 50% 60%
+background-size: 50%
+
+# Do summary statistics capture everything?
+
+Is there a significant association between two continuous variables x and y?
+
+.footnote[Source: https://en.wikipedia.org/wiki/Anscombe%27s_quartet]
+
+---
+class: top
+background-image: url(fig/DinoSequentialSmaller.gif)
+background-position: 50% 50%
+background-size: 70%
+
+# Do summary statistics capture everything?
+
+.footnote[Source: https://www.autodeskresearch.com/publications/samestats]
+
+---
+# Simpson's paradox
+
+### Can we trust the patterns that we see?
+
+Subgroup structure (or other variables) may help to explain the patterns
+
+![](fig/simpsons-paradox.gif)
+
+.footnote[Source: https://simplystatistics.org/2017/08/08/code-for-my-educational-gifs/]
+
+
+
+
+---
+class: top, inverse
+background-image: url(http://hexb.in/vector/ggplot2.svg)
+background-position: 50% 80%
+background-size: 40%
+
+# ggplot2
+
+---
+class: top
+background-image: url(http://hadley.nz/hadley-wickham.jpg)
+background-position: 50% 60%
+background-size: 40%
+
+Hadley Wickham (http://hadley.nz/):
+
+* author of many widely used R packages
+    * including ggplot2
+    * introduced the concept of tidy data 
+    * key contributor to the tidyverse
+* author of many excellent books, including
+    * R for Data Science http://r4ds.had.co.nz/
+    * Advanced R http://adv-r.had.co.nz/
+    * etc
+    
+
+---
+class: top
+background-image: url(fig/ggplot2-google-image-search.png)
+background-position: 50% 80%
+background-size: 70%
+
+# ggplot2
+
+* Quickly iterate over a variety of plots (only making minimal changes to the code). 
+* Create publication-quality plots with minimal tweaking. 
+
+.footnote[google image search for "ggplot2"]
+
+---
+class: top
+background-image: url(fig/learning_curve.png)
+background-position: 50% 80%
+background-size: 70%
+
+# ggplot2 learning curve
+
+.footnote[Source: https://github.com/jennybc/ggplot2-tutorial]
+
+---
+class: top
+background-image: url(fig/grammar-of-graphics.png)
+background-position: 50% 80%
+background-size: 50%
+
+# ggplot2
+
+Based on the Grammar of Graphics (book by Leland Wilkinson, 1999/2005) -- idea that every graph can be built from the same components. Results in a very flexible framework for plotting. 
+
+---
+class: top
+
+# ggplot2 
+
+![](fig/ggplot2-cheatsheet1.png)
+
+![](fig/ggplot2-cheatsheet2.png)
+
+
+---
+# Gapminder data
+
+* See the famous TED talk by Hans Rosling https://www.ted.com/talks/hans_rosling_shows_the_best_stats_you_ve_ever_seen
+
+* R package "gapminder" conveniently provides a subset of that data https://github.com/jennybc/gapminder
+
+--
+
+```{r}
+library(gapminder)
+
+head(gapminder)
+```
+
+---
+
+# ggplot2 call
+
+```{r, fig.height=4.5, fig.width=6.0}
+library(ggplot2)
+
+ggplot(gapminder, aes(x = gdpPercap, y = lifeExp))
+```
+
+---
+# ggplot2 call: scatterplot
+
+```{r, fig.height=4.5, fig.width=6.0}
+library(ggplot2)
+
+ggplot(gapminder, aes(x = gdpPercap, y = lifeExp)) +
+  geom_point()
+```
+
+---
+# colour by continent
+
+```{r, fig.height=4.5, fig.width=6.0}
+library(ggplot2)
+
+ggplot(gapminder, aes(x = gdpPercap, y = lifeExp, col = continent)) +
+  geom_point()
+```
+
+---
+# change x-axis scale
+
+```{r, fig.height=4.5, fig.width=6.0}
+library(ggplot2)
+
+ggplot(gapminder, aes(x = gdpPercap, y = lifeExp, col = continent)) +
+  geom_point() +
+  scale_x_log10()
+```
+
+---
+# facet by continent
+
+```{r, fig.height=4.5, fig.width=6.0}
+library(ggplot2)
+
+ggplot(gapminder, aes(x = gdpPercap, y = lifeExp)) +
+  geom_point() +
+  facet_wrap(~ continent) +
+  scale_x_log10()
+```
+
+
+
+---
+# Let's explore life expectancy
+
+--
+
+.pull-left[
+```{r, fig.height=4.5, fig.width=6, message=FALSE}
+ggplot(gapminder, aes(x = lifeExp)) + 
+  geom_histogram()
+```
+]
+
+--
+
+.pull-right[
+```{r, fig.height=4.5, fig.width=6}
+ggplot(gapminder, aes(x = lifeExp)) + 
+  geom_density()
+```
+]
+
+--
+
+How does this compare across continents? Across years?
+---
+# Let's explore life expectancy (across continents)
+
+.pull-left[
+```{r, fig.height=4.5, fig.width=6, message=FALSE}
+ggplot(gapminder, aes(x = continent, y = lifeExp)) + 
+  geom_boxplot()
+```
+]
+
+.pull-right[
+```{r, fig.height=4.5, fig.width=6}
+ggplot(gapminder, aes(x = lifeExp, col = continent)) + 
+  geom_density()
+```
+]
+
+--
+
+Can you think of other ways? Try them out! 
+
+---
+
+# aes() for different layers
+
+Every layer can have its own aesthetics. 
+
+Here, we have only one layer `geom_point()`, so all of the following are equivalent
+
+```{r, eval=FALSE}
+ggplot(gapminder, aes(x = gdpPercap, y = lifeExp, col = continent)) + 
+  geom_point()
+```
+
+```{r, eval=FALSE}
+ggplot(gapminder, aes(x = gdpPercap, y = lifeExp)) + 
+  geom_point(aes(col = continent))
+```
+
+```{r, eval=FALSE}
+ggplot(gapminder) + 
+  geom_point(aes(x = gdpPercap, y = lifeExp, col = continent))
+```
+
+---
+
+# aes() for different layers
+
+.pull-left[
+Here `aes(col = continent)` is shared for both layers.
+```{r, fig.width=5, fig.height=4, message=FALSE}
+ggplot(gapminder, aes(gdpPercap, lifeExp, col = continent)) + 
+  geom_point() +
+  geom_smooth() +
+  scale_x_log10()
+```
+]
+
+.pull-right[
+Here `aes(col = continent)` is specified for `geom_point()` only.
+```{r, fig.width=5, fig.height=4, message=FALSE}
+ggplot(gapminder, aes(gdpPercap, lifeExp)) + 
+  geom_point(aes(col = continent)) +
+  geom_smooth() +
+  scale_x_log10()
+```
+]
+
+---
+
+# aes(): specifying colour manually
+
+.pull-left[
+```{r, fig.width=5, fig.height=4, message=FALSE}
+ggplot(gapminder, aes(gdpPercap, lifeExp)) + 
+  geom_point(col = "green")
+```
+]
+
+.pull-right[
+```{r, fig.width=5, fig.height=4, message=FALSE}
+ggplot(gapminder, aes(gdpPercap, lifeExp)) + 
+  geom_point(aes(col = "green"))
+```
+]
+
+--
+
+Good resource for choosing colours: http://colorbrewer2.org
+
+---
+
+# Similarly: every layer can be based on different data
+
+```{r, fig.width=5, fig.height=4, message=FALSE}
+df_europe <- subset(gapminder, continent == "Europe")
+
+ggplot() + 
+  geom_point(aes(gdpPercap, lifeExp), data = gapminder, col = "grey50") +
+  geom_point(aes(gdpPercap, lifeExp), data = df_europe, col = "red") +
+  scale_x_log10()
+```
+
+---
+# Tweaking your plot appearance
+
+* Combining layers
+
+* Add transparency using `alpha = 0.5`
+
+* Changing the default theme:
+    * `+ theme_bw()`
+    * `+ theme_classic()`
+    * etc, see also the ggthemes package
+* Check out the ggplot2 cheat sheet by RStudio
+
+* Axis limits 
+    
+    * `+ coord_cartesian(ylim = c(-3, 5))`
+    
+* Title, subtitle, caption 
+    
+    * `+ labs(title = "", subtitle = "")`
+
+---
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+library(tidyverse)
+gapminder %>% 
+  filter(continent != "Oceania") %>%
+  ggplot(aes(lifeExp, col=year, group=year)) +
+  geom_density(alpha = 0.5) +
+  scale_color_viridis_c() +
+  facet_wrap(~ continent) +
+  theme_minimal()
+```
+
+
+---
+background-image: url(fig/ggridges_ex1.jpg)
+background-position: 50% 80%
+background-size: 50%
+
+# ggplot2 extensions 
+
+http://www.ggplot2-exts.org/
+
+ggridges
+
+---
+background-image: url(fig/ggridges_ex2.png)
+background-position: 50% 90%
+background-size: 40%
+
+# ggplot2 extensions 
+
+http://www.ggplot2-exts.org/
+
+ggridges
+
+---
+class: inverse
+
+# Great Resources:
+
+* R for Data Science http://r4ds.had.co.nz/
+
+* Fundamentals of Data Visualization https://serialmentor.com/dataviz
+
+---
+
+class: inverse, middle
+
+# Data transformation using dplyr
+
+---
+
+# Subset rows with filter()
+
+![](fig/dplyr_filter.png)
+
+Example: 
+
+```{r, eval=FALSE}
+filter(gapminder, continent == "Europe")
+```
+
+```{r, eval=FALSE}
+filter(gapminder, continent == "Europe", year > 2000)
+
+```
+
+---
+
+# Subset columns with select()
+
+![](fig/dplyr_select.png)
+
+Example: 
+
+```{r, eval=FALSE}
+select(gapminder, year, continent, lifeExp)
+```
+
+Or exclude certain columns
+
+```{r, eval=FALSE}
+select(gapminder, -gdpPercap)
+```
+
+---
+# Add a new column with mutate()
+
+![](fig/dplyr_mutate.png)
+
+Example: 
+
+```{r, eval=FALSE}
+mutate(gapminder, total_gdp = pop * gdpPercap)
+```
+
+---
+
+### group_by() and summarise()
+
+![](fig/dplyr_group_by_summarize.png)
+
+Example: 
+
+```{r}
+grouped_df <- group_by(gapminder, continent)
+summarise(grouped_df, count = n(), mean_lifeExp = mean(lifeExp))
+```
+
+---
+
+# Pipes `%>%`
+
+Introducing `%>%`, to help you write code in a way that easier to read and understand.
+
+`g(f(x))` can be rewritten using the pipe `x %>% f() %>% g()`
+
+
+--
+
+E.g. the following
+
+```{r, eval=FALSE}
+filtered_df <- filter(gapminder, continent != "Oceania")
+grouped_df <- group_by(filtered_df, continent)
+summarise(grouped_df, count = n(), mean_lifeExp = mean(lifeExp))
+```
+
+can be rewritten 
+
+```{r, eval=FALSE}
+gapminder %>%
+  filter(continent != "Oceania") %>%
+  group_by(continent) %>%
+  summarise(count = n(), mean_lifeExp = mean(lifeExp))
+```
+
+--
+
+* No need for storing intermediate variables.
+* Easier to read and write.
+
+---
+class: inverse, middle, center
+
+## kaspar.martens@gmail.com
