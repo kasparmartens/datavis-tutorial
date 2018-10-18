@@ -669,17 +669,10 @@ http://www.ggplot2-exts.org/
 ggridges
 
 ---
-class: inverse
-
-# Great Resources:
-
-* R for Data Science http://r4ds.had.co.nz/
-
-* Fundamentals of Data Visualization https://serialmentor.com/dataviz
-
----
 
 class: inverse, middle
+
+# Very brief introduction: 
 
 # Data transformation using dplyr
 
@@ -776,6 +769,21 @@ gapminder %>%
 * Easier to read and write.
 
 ---
+class: inverse
+
+# Great Resources:
+
+* R for Data Science http://r4ds.had.co.nz/
+
+* Fundamentals of Data Visualization https://serialmentor.com/dataviz
+
+* TED talk by Hans Rosling https://www.ted.com/talks/hans_rosling_shows_the_best_stats_you_ve_ever_seen
+
+* Talk by John Rauser on How Humans See Data https://www.youtube.com/watch?v=fSgEeI2Xpdc
+
+---
 class: inverse, middle, center
 
-## kaspar.martens@gmail.com
+`r fontawesome::fa("twitter", fill = "steelblue")` @kasparmartens
+
+`r fontawesome::fa("envelope", fill = "white")` kaspar.martens@gmail.com
