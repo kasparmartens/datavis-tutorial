@@ -482,7 +482,16 @@ ggplot(gapminder, aes(x = gdpPercap, y = lifeExp)) +
   scale_x_log10()
 ```
 
+---
+# colour and size
 
+```{r, fig.height=4.5, fig.width=6.0}
+library(ggplot2)
+
+ggplot(gapminder, aes(x = gdpPercap, y = lifeExp, col = continent, size=pop)) +
+  geom_point() +
+  scale_x_log10()
+```
 
 ---
 # Let's explore life expectancy
@@ -528,6 +537,63 @@ ggplot(gapminder, aes(x = lifeExp, col = continent)) +
 --
 
 Can you think of other ways? Try them out! 
+
+---
+# colour vs fill
+
+.pull-left[
+```{r, fig.height=4.5, fig.width=6, message=FALSE}
+ggplot(gapminder, aes(x = continent, y = lifeExp, col=continent)) + 
+  geom_boxplot()
+```
+]
+
+.pull-right[
+```{r, fig.height=4.5, fig.width=6}
+ggplot(gapminder, aes(x = continent, y = lifeExp, fill=continent)) + 
+  geom_boxplot()
+```
+]
+
+---
+# colour vs fill
+
+Transparency with `alpha`
+
+.pull-left[
+```{r, fig.height=4.5, fig.width=6, message=FALSE}
+ggplot(gapminder, aes(lifeExp, col=continent)) + 
+  geom_density()
+```
+]
+
+.pull-right[
+```{r, fig.height=4.5, fig.width=6}
+ggplot(gapminder, aes(lifeExp, fill=continent)) + 
+  geom_density(alpha = 0.5)
+```
+]
+
+---
+# Multiple layers can be combined
+
+Note the order of plotting
+
+.pull-left[
+```{r, fig.height=4.5, fig.width=6, message=FALSE}
+ggplot(gapminder, aes(x = continent, y = lifeExp, col=continent)) + 
+  geom_jitter() +
+  geom_boxplot()
+```
+]
+
+.pull-right[
+```{r, fig.height=4.5, fig.width=6, message=FALSE}
+ggplot(gapminder, aes(x = continent, y = lifeExp, col=continent)) + 
+  geom_boxplot() + 
+  geom_jitter()
+```
+]
 
 ---
 
@@ -577,6 +643,25 @@ ggplot(gapminder, aes(gdpPercap, lifeExp)) +
 ]
 
 ---
+# aes(): specifying colour manually
+
+`col = "green"` versus `aes(col = continent)`
+
+.pull-left[
+```{r, fig.width=5, fig.height=4, message=FALSE}
+ggplot(gapminder, aes(gdpPercap, lifeExp)) + 
+  geom_point(col = "green")
+```
+]
+
+.pull-right[
+```{r, fig.width=5, fig.height=4, message=FALSE}
+ggplot(gapminder, aes(gdpPercap, lifeExp)) + 
+  geom_point(aes(col = continent))
+```
+]
+
+---
 
 # aes(): specifying colour manually
 
@@ -622,6 +707,7 @@ ggplot() +
     * `+ theme_bw()`
     * `+ theme_classic()`
     * etc, see also the ggthemes package
+    
 * Check out the ggplot2 cheat sheet by RStudio
 
 * Axis limits 
@@ -630,7 +716,7 @@ ggplot() +
     
 * Title, subtitle, caption 
     
-    * `+ labs(title = "", subtitle = "")`
+    * `+ labs(title = "", subtitle = "", x = "", y = "")`
 
 ---
 
@@ -642,7 +728,8 @@ gapminder %>%
   geom_density(alpha = 0.5) +
   scale_color_viridis_c() +
   facet_wrap(~ continent) +
-  theme_minimal()
+  theme_minimal() + 
+  labs(title = "My title", x = "Life expectancy")
 ```
 
 

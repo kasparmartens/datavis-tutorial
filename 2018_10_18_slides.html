@@ -582,7 +582,19 @@ ggplot(gapminder, aes(x = gdpPercap, y = lifeExp)) +
 
 ![](2018_10_18_slides_files/figure-html/unnamed-chunk-17-1.png)&lt;!-- --&gt;
 
+---
+# colour and size
 
+
+```r
+library(ggplot2)
+
+ggplot(gapminder, aes(x = gdpPercap, y = lifeExp, col = continent, size=pop)) +
+  geom_point() +
+  scale_x_log10()
+```
+
+![](2018_10_18_slides_files/figure-html/unnamed-chunk-18-1.png)&lt;!-- --&gt;
 
 ---
 # Let's explore life expectancy
@@ -596,7 +608,7 @@ ggplot(gapminder, aes(x = lifeExp)) +
   geom_histogram()
 ```
 
-![](2018_10_18_slides_files/figure-html/unnamed-chunk-18-1.png)&lt;!-- --&gt;
+![](2018_10_18_slides_files/figure-html/unnamed-chunk-19-1.png)&lt;!-- --&gt;
 ]
 
 --
@@ -608,7 +620,7 @@ ggplot(gapminder, aes(x = lifeExp)) +
   geom_density()
 ```
 
-![](2018_10_18_slides_files/figure-html/unnamed-chunk-19-1.png)&lt;!-- --&gt;
+![](2018_10_18_slides_files/figure-html/unnamed-chunk-20-1.png)&lt;!-- --&gt;
 ]
 
 --
@@ -624,7 +636,7 @@ ggplot(gapminder, aes(x = continent, y = lifeExp)) +
   geom_boxplot()
 ```
 
-![](2018_10_18_slides_files/figure-html/unnamed-chunk-20-1.png)&lt;!-- --&gt;
+![](2018_10_18_slides_files/figure-html/unnamed-chunk-21-1.png)&lt;!-- --&gt;
 ]
 
 .pull-right[
@@ -634,12 +646,87 @@ ggplot(gapminder, aes(x = lifeExp, col = continent)) +
   geom_density()
 ```
 
-![](2018_10_18_slides_files/figure-html/unnamed-chunk-21-1.png)&lt;!-- --&gt;
+![](2018_10_18_slides_files/figure-html/unnamed-chunk-22-1.png)&lt;!-- --&gt;
 ]
 
 --
 
 Can you think of other ways? Try them out! 
+
+---
+# colour vs fill
+
+.pull-left[
+
+```r
+ggplot(gapminder, aes(x = continent, y = lifeExp, col=continent)) + 
+  geom_boxplot()
+```
+
+![](2018_10_18_slides_files/figure-html/unnamed-chunk-23-1.png)&lt;!-- --&gt;
+]
+
+.pull-right[
+
+```r
+ggplot(gapminder, aes(x = continent, y = lifeExp, fill=continent)) + 
+  geom_boxplot()
+```
+
+![](2018_10_18_slides_files/figure-html/unnamed-chunk-24-1.png)&lt;!-- --&gt;
+]
+
+---
+# colour vs fill
+
+Transparency with `alpha`
+
+.pull-left[
+
+```r
+ggplot(gapminder, aes(lifeExp, col=continent)) + 
+  geom_density()
+```
+
+![](2018_10_18_slides_files/figure-html/unnamed-chunk-25-1.png)&lt;!-- --&gt;
+]
+
+.pull-right[
+
+```r
+ggplot(gapminder, aes(lifeExp, fill=continent)) + 
+  geom_density(alpha = 0.5)
+```
+
+![](2018_10_18_slides_files/figure-html/unnamed-chunk-26-1.png)&lt;!-- --&gt;
+]
+
+---
+# Multiple layers can be combined
+
+Note the order of plotting
+
+.pull-left[
+
+```r
+ggplot(gapminder, aes(x = continent, y = lifeExp, col=continent)) + 
+  geom_jitter() +
+  geom_boxplot()
+```
+
+![](2018_10_18_slides_files/figure-html/unnamed-chunk-27-1.png)&lt;!-- --&gt;
+]
+
+.pull-right[
+
+```r
+ggplot(gapminder, aes(x = continent, y = lifeExp, col=continent)) + 
+  geom_boxplot() + 
+  geom_jitter()
+```
+
+![](2018_10_18_slides_files/figure-html/unnamed-chunk-28-1.png)&lt;!-- --&gt;
+]
 
 ---
 
@@ -681,7 +768,7 @@ ggplot(gapminder, aes(gdpPercap, lifeExp, col = continent)) +
   scale_x_log10()
 ```
 
-![](2018_10_18_slides_files/figure-html/unnamed-chunk-25-1.png)&lt;!-- --&gt;
+![](2018_10_18_slides_files/figure-html/unnamed-chunk-32-1.png)&lt;!-- --&gt;
 ]
 
 .pull-right[
@@ -694,7 +781,32 @@ ggplot(gapminder, aes(gdpPercap, lifeExp)) +
   scale_x_log10()
 ```
 
-![](2018_10_18_slides_files/figure-html/unnamed-chunk-26-1.png)&lt;!-- --&gt;
+![](2018_10_18_slides_files/figure-html/unnamed-chunk-33-1.png)&lt;!-- --&gt;
+]
+
+---
+# aes(): specifying colour manually
+
+`col = "green"` versus `aes(col = continent)`
+
+.pull-left[
+
+```r
+ggplot(gapminder, aes(gdpPercap, lifeExp)) + 
+  geom_point(col = "green")
+```
+
+![](2018_10_18_slides_files/figure-html/unnamed-chunk-34-1.png)&lt;!-- --&gt;
+]
+
+.pull-right[
+
+```r
+ggplot(gapminder, aes(gdpPercap, lifeExp)) + 
+  geom_point(aes(col = continent))
+```
+
+![](2018_10_18_slides_files/figure-html/unnamed-chunk-35-1.png)&lt;!-- --&gt;
 ]
 
 ---
@@ -708,7 +820,7 @@ ggplot(gapminder, aes(gdpPercap, lifeExp)) +
   geom_point(col = "green")
 ```
 
-![](2018_10_18_slides_files/figure-html/unnamed-chunk-27-1.png)&lt;!-- --&gt;
+![](2018_10_18_slides_files/figure-html/unnamed-chunk-36-1.png)&lt;!-- --&gt;
 ]
 
 .pull-right[
@@ -718,7 +830,7 @@ ggplot(gapminder, aes(gdpPercap, lifeExp)) +
   geom_point(aes(col = "green"))
 ```
 
-![](2018_10_18_slides_files/figure-html/unnamed-chunk-28-1.png)&lt;!-- --&gt;
+![](2018_10_18_slides_files/figure-html/unnamed-chunk-37-1.png)&lt;!-- --&gt;
 ]
 
 --
@@ -739,7 +851,7 @@ ggplot() +
   scale_x_log10()
 ```
 
-![](2018_10_18_slides_files/figure-html/unnamed-chunk-29-1.png)&lt;!-- --&gt;
+![](2018_10_18_slides_files/figure-html/unnamed-chunk-38-1.png)&lt;!-- --&gt;
 
 ---
 # Tweaking your plot appearance
@@ -752,6 +864,7 @@ ggplot() +
     * `+ theme_bw()`
     * `+ theme_classic()`
     * etc, see also the ggthemes package
+    
 * Check out the ggplot2 cheat sheet by RStudio
 
 * Axis limits 
@@ -760,11 +873,11 @@ ggplot() +
     
 * Title, subtitle, caption 
     
-    * `+ labs(title = "", subtitle = "")`
+    * `+ labs(title = "", subtitle = "", x = "", y = "")`
 
 ---
 
-![](2018_10_18_slides_files/figure-html/unnamed-chunk-30-1.png)&lt;!-- --&gt;
+![](2018_10_18_slides_files/figure-html/unnamed-chunk-39-1.png)&lt;!-- --&gt;
 
 
 ---
